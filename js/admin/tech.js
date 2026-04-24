@@ -195,32 +195,126 @@ loadNotifications();
 /* ===== SEARCH TECHNICIANS ===== */
 let currentKeyword = "";
 
-function toggleServiceSearch() {
-  const input = document.getElementById("serviceSearchInput");
+function searchTechnicians() {
+    const desktopInput = document.getElementById("searchInput");
+    const mobileInput = document.getElementById("searchMobileInput");
 
-  input.classList.toggle("show");
+    const keyword =
+        (desktopInput?.value || mobileInput?.value || "").toLowerCase();
 
-  if (input.classList.contains("show")) {
-    input.focus();
-  } else {
-    input.value = "";
-    currentKeyword = "";
+    currentKeyword = keyword;
+
     renderTechnicians();
-  }
 }
 
+/* ===== INIT SEARCH ===== */
+document.addEventListener("DOMContentLoaded", () => {
+    const desktopInput = document.getElementById("searchInput");
+    const mobileInput = document.getElementById("searchMobileInput");
+
+    // realtime search
+    desktopInput?.addEventListener("input", searchTechnicians);
+    mobileInput?.addEventListener("input", searchTechnicians);
+
+    document.addEventListener("keydown", function (e) {
+
+        // ===== ENTER =====
+        if (e.key === "Enter") {
+            if (
+                document.activeElement === desktopInput ||
+                document.activeElement === mobileInput
+            ) {
+                searchTechnicians();
+
+                // ปิด mobile overlay
+                if (window.innerWidth <= 768) {
+                    closeSearchOverlay();
+                }
+
+                // ปิด desktop input
+                desktopInput?.classList.remove("show");
+
+                document.activeElement.blur();
+            }
+        }
+
+        // ===== ESC =====
+        if (e.key === "Escape") {
+            if (desktopInput) {
+                desktopInput.value = "";
+                desktopInput.classList.remove("show");
+            }
+
+            if (mobileInput) {
+                mobileInput.value = "";
+            }
+
+            currentKeyword = "";
+            renderTechnicians();
+
+            closeSearchOverlay();
+        }
+
+        // ===== CTRL + F =====
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f") {
+            e.preventDefault();
+
+            if (window.innerWidth <= 768) {
+                openSearch();
+            } else {
+                desktopInput?.classList.add("show");
+                desktopInput?.focus();
+                desktopInput?.select();
+            }
+        }
+    });
+});
+
 function searchTechnicians() {
-  const input = document.getElementById("serviceSearchInput");
-  currentKeyword = input.value.toLowerCase();
-  renderTechnicians();
+    const desktopInput = document.getElementById("searchInput");
+    const mobileInput = document.getElementById("searchMobileInput");
+
+    const keyword =
+        (desktopInput?.value || mobileInput?.value || "").toLowerCase();
+
+    currentKeyword = keyword;
+
+    renderTechnicians();
 }
 
 document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape") {
-    const input = document.getElementById("serviceSearchInput");
-    input.classList.remove("show");
-    input.value = "";
-    currentKeyword = "";
-    renderTechnicians();
-  }
+    if (e.key === "Escape") {
+        const input = document.getElementById("searchInput");
+        input.classList.remove("show");
+        input.value = "";
+        currentKeyword = "";
+        renderTechnicians();
+    }
+});
+
+function openSearch() {
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+        document.getElementById("searchOverlay").classList.add("show");
+        document.getElementById("searchMobileInput").focus();
+    } else {
+
+        const input = document.getElementById("searchInput");
+        input.classList.toggle("show");
+        input.focus();
+    }
+}
+
+function closeSearchOverlay() {
+    document.getElementById("searchOverlay").classList.remove("show");
+}
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        closeSearchOverlay();
+
+        const input = document.getElementById("searchInput");
+        input.classList.remove("show");
+    }
 });
