@@ -1317,7 +1317,7 @@
                   <th>วัน / เวลา</th>
                   <th>ช่าง</th>
                   <th>สถานะ</th>
-                  <th>หมายเหตุ</th>
+                  <th>เหตุผลการปฏิเสธ</th>
                   <th>จัดการ</th>
                 </tr>
               </thead>
@@ -1593,18 +1593,19 @@
 
           return {
             id: doc.id,
+
+            name: d.name || d[" name"] || "-",
+            status: d.status || d[" status"] || "-",
             ...d,
 
-            // 🔥 แปลง timestamp → ใช้กับ countdown ได้
+            //  แปลง timestamp → ใช้กับ countdown 
             bookedTime: d.createdAt?.seconds
               ? d.createdAt.seconds * 1000
               : null
           };
         });
 
-        console.log("🔥 bookings:", data);
-
-        render("all"); // 🔥 สำคัญ
+        render("all");
       } catch (err) {
         console.error("❌ load error:", err);
       }
@@ -1781,7 +1782,12 @@
       </td>
 
       <!-- FIX 4: ใช้ note -->
-      <td>${d.note || "-"}</td>
+      <td style="color:#e11d48; font-weight:500;">
+  ${d.status === "cancelled" && d.cancelType === "rejected"
+    ? (d.adminNote || "-")
+    : "-"
+  }
+</td>
 
       <td>
         ${d.status === "pending"
@@ -2035,6 +2041,9 @@
     window.openReject = openReject;
     window.toggleSidebar = toggleSidebar;
     window.openReject = openReject;
+    window.confirmReject = confirmReject;
+    window.toggleSearch = toggleSearch;
+    window.toggleNotification = toggleNotification;
   </script>
 
 </body>
