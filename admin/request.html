@@ -1453,7 +1453,7 @@
       loadBookingsFromFirebase();
 
     });
-
+document.getElementById("searchInput").addEventListener("input", searchDashboard);
     /* ===== NOTIFICATION ===== */
     const notifySound = new Audio("../sounds/notify.mp3");
     notifySound.volume = 1;
@@ -2044,6 +2044,7 @@
     window.confirmReject = confirmReject;
     window.toggleSearch = toggleSearch;
     window.toggleNotification = toggleNotification;
+    window.closeAssignModal = closeAssignModal;
   </script>
 
 </body>
