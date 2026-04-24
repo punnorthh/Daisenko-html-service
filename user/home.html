@@ -87,20 +87,16 @@
   <script src="/js/user/notification.js"></script>
   <script>
     // โหลด header
-    fetch("/components/header.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("header").innerHTML = data;
-        renderHeader(); 
-        loadNotifications(); 
-      });
+    Promise.all([
+      fetch("/components/header.html").then(res => res.text()),
+      fetch("/components/footer.html").then(res => res.text())
+    ]).then(([headerData, footerData]) => {
+      document.getElementById("header").innerHTML = headerData;
+      document.getElementById("footer").innerHTML = footerData;
 
-    // โหลด footer
-    fetch("/components/footer.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("footer").innerHTML = data;
-      });
+      renderHeader();
+      loadNotifications();
+    });
       
     /* =============   UTIL SAFE JSON ================== */
     function getJSON(key, fallback = null) {
