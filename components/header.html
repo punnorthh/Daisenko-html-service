@@ -7,11 +7,16 @@
     </div>
     <div class="nav-right">
       <div class="search-wrapper">
-        <input id="searchInput" type="text" placeholder="ค้นหา" oninput="searchHome()" />
 
-        <button class="icon-btn" onclick="toggleSearch()">
+        <!-- 🔹 Desktop Search -->
+        <i class="ri-search-line search-icon"></i>
+        <input id="searchInputDesktop" type="text" placeholder="Search" oninput="handleGlobalSearch()" />
+
+        <!-- 🔹 Mobile Button -->
+        <button class="icon-btn mobile-search-btn" onclick="toggleSearch()">
           <i class="ri-search-line"></i>
         </button>
+
       </div>
 
       <div class="notification-wrapper">
@@ -26,4 +31,18 @@
       <div id="navAuth"></div>
     </div>
   </div>
+
 </header>
+
+<div id="searchOverlay" class="search-overlay">
+  <div class="search-box">
+    <i class="ri-search-line"></i>
+    <input 
+      type="text" 
+      id="searchInput" 
+      placeholder="ค้นหา..." 
+      oninput="handleGlobalSearch()"
+    />
+    <button class="close-btn" onclick="toggleSearch()">✕</button>
+  </div>
+</div>
