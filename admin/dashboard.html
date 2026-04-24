@@ -25,19 +25,19 @@
       <div class="sidebar-divider"></div>
 
       <a href="dashboard.html" data-link="dashboard" class="active">
-        <i class="ri-dashboard-line"></i> Dashboard
+        <i class="ri-dashboard-line"></i> แดชบอร์ด
       </a>
 
       <a href="request.html" data-link="request">
-        <i class="ri-user-line"></i> Request
+        <i class="ri-user-line"></i> รายการคำขอ
       </a>
 
       <a href="technicians.html" data-link="technicians">
-        <i class="ri-group-line"></i> Technicians
+        <i class="ri-group-line"></i> รายชื่อช่าง
       </a>
 
       <a href="service_edit.html" data-link="service_edit">
-        <i class="ri-file-list-line"></i> Service Edit
+        <i class="ri-file-list-line"></i> แก้ไขบริการ
       </a>
 
     </aside>
@@ -60,15 +60,12 @@
 
           <div class="top-nav-right">
             <div class="search-wrapper">
-              <button class="icon-btn" onclick="toggleSearch()">
+              <button class="icon-btn" onclick="openSearch()">
                 <i class="ri-search-line"></i>
               </button>
-
-              <div class="search-box">
-                <input id="searchInput" type="text" placeholder="ค้นหา" oninput="searchDashboard()" />
-                <div id="searchResultBox" class="search-result-box"></div>
-              </div>
+              <input id="searchInput" type="text" placeholder="ค้นหา" oninput="searchDashboard()" />
             </div>
+            
             <div class="notification-wrapper">
               <button class="icon-btn" onclick="toggleNotification()">
                 <i class="ri-notification-3-line"></i>
@@ -88,7 +85,7 @@
               </button>
 
               <div id="userDropdown" class="user-dropdown">
-                <button onclick="logout()">
+                <button onclick="logout(event)">
                   <i class="ri-logout-box-r-line"></i>
                   Logout
                 </button>
@@ -104,37 +101,37 @@
 
       <div class="content">
 
-        <h2 class="overall-title">Overall Status</h2>
+        <h2 class="overall-title">ภาพรวมทั้งหมด</h2>
 
         <!-- ===== STATS ===== -->
         <section class="stats-modern">
           <div class="stat-card primary">
             <p class="card-title">
-              <span class="dot dot-blue"></span> Total Bookings
+              <span class="dot dot-blue"></span> การจองบริการทั้งหมด
             </p>
             <h2 id="totalBooking">0</h2>
             <span>ทั้งหมด</span>
           </div>
 
-          <div class="stat-card">
+          <div class="stat-card warning"> 
             <p class="card-title">
-              <span class="dot dot-orange"></span> Pending
+              <span class="dot dot-orange"></span> กำลังรอดำเนินการ
             </p>
             <h2 id="pendingBooking">0</h2>
             <span>รอดำเนินการ</span>
           </div>
 
-          <div class="stat-card">
+          <div class="stat-card success"> 
             <p class="card-title">
-              <span class="dot dot-green"></span> Assigned
+              <span class="dot dot-green"></span> มอบหมายงานแล้ว
             </p>
             <h2 id="assignedBooking">0</h2>
             <span>มอบหมายแล้ว</span>
           </div>
 
-          <div class="stat-card">
+          <div class="stat-card danger"> 
             <p class="card-title">
-              <span class="dot dot-red"></span> Rejected
+              <span class="dot dot-red"></span> บริการที่ยกเลิก
             </p>
             <h2 id="rejectedBooking">0</h2>
             <span>ยกเลิก</span>
@@ -166,6 +163,22 @@
       </div>
 
     </main>
+  </div>
+
+  <!-- SEARCH OVERLAY -->
+  <div id="searchOverlay" class="search-overlay">
+    <div class="search-panel">
+      <div class="search-header">
+        <i class="ri-search-line"></i>
+        <input type="text" id="searchMobileInput" placeholder="ค้นหา..." oninput="searchDashboardMobile()" />
+        <button onclick="closeSearchOverlay()">✕</button>
+      </div>
+
+      <div class="search-body">
+        <p class="search-title">การค้นหายอดนิยม</p>
+        <div id="searchResults"></div>
+      </div>
+    </div>
   </div>
 
   <script type="module"></script>
