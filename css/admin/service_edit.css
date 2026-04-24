@@ -1,0 +1,582 @@
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --danger: #ef4444;
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --border: #e5e7eb;
+    --text: #1f2937;
+    --muted: #6b7280;
+}
+
+#serviceMobile {
+    display: none;
+}
+
+/* ===== Table ===== */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.page-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    min-width: 110px;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-add {
+    background: var(--primary);
+    color: #fff;
+}
+
+.btn-delete {
+    background: var(--danger);
+    color: #fff;
+}
+
+.table-wrapper {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+thead th {
+    background: #f8f9fb;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+tbody td {
+    padding: 14px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+tbody tr:hover {
+    background: #f9fafb;
+}
+
+th:first-child,
+td:first-child {
+    width: 48px;
+    text-align: start;
+}
+
+th:last-child,
+td:last-child {
+    width: 120px;
+    text-align: left;
+    padding-left: 8px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: start;
+    padding: 4px 12px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 9px;
+}
+
+.badge.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+td:nth-last-child(2),
+th:nth-last-child(2) {
+    padding-left: 8px;
+}
+
+.btn-edit {
+    background: #fde047;
+    color: #111827;
+    border: none;
+    margin-left: 0;
+    padding: 6px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    align-items: start;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 22px;
+    padding: 32px 34px;
+    width: 100%;
+    max-width: 460px;
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* FORM CENTER */
+.form-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.form-group {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.form-group input {
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.checkbox-center {
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-actions {
+    margin-top: 28px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* ===== MODAL STYLE ===== */
+@media (max-width: 768px) {
+
+    .modal-content {
+        width: 92%;
+        max-width: 420px;
+        padding: 22px;
+        border-radius: 18px;
+    }
+
+    .modal-content h3 {
+        font-size: 20px;
+    }
+
+}
+
+.form-vertical {
+    gap: 14px;
+}
+
+.form-vertical input,
+.form-vertical select {
+    height: 48px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 0 16px;
+    font-size: 15px;
+}
+
+.form-vertical select {
+    appearance: none;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='gray'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+
+/* Image Button */
+.image-btn {
+    height: 42px;
+    padding: 0 18px;
+    border-radius: 10px;
+    border: none;
+    background: #6b7280;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.image-btn:hover {
+    background: #4b5563;
+}
+
+/* Add Button */
+.form-actions.center {
+    justify-content: end;
+    margin-top: 18px;
+}
+
+.form-actions.center .btn {
+    width: 120px;
+    border-radius: 10px;
+}
+
+/* ===== FORM WIDTH FIX ===== */
+.form-vertical {
+    width: 100%;
+}
+
+.form-vertical input,
+.form-vertical select {
+    width: 100%;
+    max-width: 360px;
+    /* กว้างขึ้น */
+}
+
+/* ===== ACTIVE TOGGLE ===== */
+.active-row {
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    font-size: 15px;
+}
+
+.active-row label:first-child {
+    font-weight: 500;
+    color: var(--text);
+}
+
+/* Toggle Switch */
+.switch {
+    position: relative;
+    width: 46px;
+    height: 26px;
+}
+
+.switch,
+.switch * {
+    margin: 0 !important;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #d1d5db;
+    border-radius: 999px;
+    transition: .3s;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08);
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+.switch input:checked+.slider {
+    background: var(--primary);
+}
+
+.switch input:checked+.slider::before {
+    transform: translateX(20px);
+}
+
+/* DELETE MODAL */
+.delete-box {
+    text-align: center;
+    max-width: 420px;
+}
+
+.delete-icon {
+    font-size: 64px;
+    color: #ef4444;
+    margin-bottom: 10px;
+}
+
+.delete-box h2 {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.delete-box p {
+    color: #6b7280;
+    margin-bottom: 24px;
+}
+
+.delete-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.cancel-btn {
+    background: #6b7280;
+    color: #fff;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: #fff;
+}
+
+/* ======= MOBILE RESPONSIVE FULL FIX (SERVICE EDIT) ======== */
+html,
+body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* ===== Tablet ===== */
+@media (max-width:1024px) {
+    .content {
+        padding: 18px;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+    }
+
+    .btn {
+        height: 42px;
+    }
+
+}
+
+/* ===== Mobile ===== */
+@media (max-width:768px) {
+
+    /* content */
+    .content {
+        padding: 16px;
+    }
+
+    /* HEADER LAYOUT */
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .btn-delete {
+        display: none;
+    }
+
+    .page-header h1 {
+        font-size: 22px;
+    }
+
+    /* action buttons */
+    .actions {
+        width: auto;
+        margin-left: auto;
+    }
+
+    .actions .btn {
+        flex: 1;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .actions .btn-add {
+        width: auto;
+        padding: 0 18px;
+        height: 42px;
+        font-size: 14px;
+    }
+
+    /* table */
+    table {
+        display: none !important;
+    }
+
+    #serviceMobile {
+        display: block;
+    }
+
+    table {
+        min-width: 700px;
+    }
+
+    thead th {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    tbody td {
+        font-size: 13px;
+        padding: 10px;
+    }
+
+    /* ===== MOBILE CARD FULL UI ===== */
+    .service-card {
+        background: #fff;
+        border-radius: 22px;
+        overflow: hidden;
+        margin-bottom: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    /* IMAGE */
+    .service-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    /* CONTENT */
+    .service-body {
+        padding: 18px;
+    }
+
+    /* CATEGORY TAG */
+    .service-category {
+        display: inline-block;
+        background: #2563eb;
+        color: #fff;
+        font-size: 13px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        margin-bottom: 10px;
+    }
+
+    /* TITLE */
+    .service-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    /* ID / SUBTEXT */
+    .service-sub {
+        font-size: 14px;
+        color: #9ca3af;
+        margin-bottom: 12px;
+    }
+
+    /* PRICE */
+    .service-price {
+        font-size: 26px;
+        font-weight: 700;
+        color: #2563eb;
+        margin-bottom: 16px;
+    }
+
+    /* ACTION BUTTONS */
+    .service-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .service-actions button {
+        flex: 1;
+        height: 44px;
+        border-radius: 14px;
+        border: none;
+        font-size: medium;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* EDIT */
+    .btn-edit-card {
+        background: rgb(255, 207, 15);
+        color: #1f2937;
+        border: 1px solid #e5e7eb;
+    }
+
+    .btn-edit-card:hover {
+        background: #e5e7eb;
+    }
+
+    /* DELETE */
+    .btn-delete-card {
+        background: #ef4444;
+        color: #fff;
+    }
+}
+
+/* ===== Small Mobile (iPhone SE etc.) ===== */
+@media (max-width:480px) {
+    .page-header h1 {
+        font-size: 20px;
+    }
+
+    #serviceSearchInput.show {
+        width: 120px;
+    }
+}
+
+/* ===== Very Small ===== */
+@media (max-width:420px) {
+    #serviceSearchInput.show {
+        width: 90px;
+    }
+
+}

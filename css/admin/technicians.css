@@ -1,0 +1,266 @@
+/* ================= ROOT ================= */
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --text: #1F2365;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+
+    --success-bg: #dcfce7;
+    --success-text: #166534;
+
+    --danger-bg: #fee2e2;
+    --danger-text: #991b1b;
+
+    --gray-bg: #e5e7eb;
+    --gray-text: #374151;
+}
+
+/* ================= BASE ================= */
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.content {
+    padding: 28px;
+}
+
+/* ================= TABLE BOX ================= */
+.table-box {
+    background: var(--card);
+    padding: 26px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(31, 35, 101, .08);
+    max-width: 1400px;
+    margin: auto;
+}
+
+.table-box h2 {
+    margin-bottom: 18px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* ================= TABLE ================= */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 700px;
+}
+
+/* HEADER */
+thead {
+    background: #f1f5f9;
+}
+
+thead th {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    padding: 14px;
+    text-align: center;
+}
+
+/* BODY */
+tbody td {
+    padding: 16px;
+    font-size: 15px;
+    border-top: 1px solid #f1f5f9;
+    text-align: center;
+}
+
+/* HOVER */
+tbody tr {
+    transition: 0.2s;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* FIRST COLUMN */
+tbody td:first-child {
+    font-weight: 600;
+}
+
+/* ================= STATUS ================= */
+.status {
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+    min-width: 90px;
+}
+
+/* STATUS COLORS */
+.available {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+
+.busy {
+    background: var(--danger-bg);
+    color: var(--danger-text);
+}
+
+.offline {
+    background: var(--gray-bg);
+    color: var(--gray-text);
+}
+
+/* ================= MOBILE ================= */
+#techMobile {
+    display: none;
+}
+
+/* CARD */
+.tech-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    /* box-shadow: 0 10px 25px rgba(0, 0, 0, .06); */
+    border: 1px solid #f1f3f9;
+    animation: fadeUp .3s ease;
+}
+
+/* ROW */
+.tech-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.tech-label {
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.tech-value {
+    font-weight: 500;
+    color: #111;
+    margin-left: auto;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* ===== 1024px ===== */
+@media (max-width: 1024px) {
+
+    .content {
+        padding: 24px;
+    }
+
+    .table-box {
+        padding: 22px;
+    }
+
+    thead th {
+        font-size: 13px;
+        padding: 12px;
+    }
+
+    tbody td {
+        font-size: 14px;
+        padding: 14px;
+    }
+}
+
+/* ===== 768px ===== */
+@media (max-width: 768px) {
+
+    .content {
+        padding: 18px;
+    }
+
+    table {
+        display: none;
+    }
+
+    #techMobile {
+        display: block;
+    }
+}
+
+/* ===== 480px ===== */
+@media (max-width: 480px) {
+
+    .tech-card {
+        padding: 14px;
+    }
+
+    .tech-row {
+        font-size: 13px;
+    }
+
+    .status {
+        font-size: 12px;
+        padding: 5px 12px;
+    }
+}
+
+/* ===== 360px ===== */
+@media (max-width: 360px) {
+
+    .content {
+        padding: 14px;
+    }
+
+    .tech-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .tech-value {
+        text-align: left;
+        width: 100%;
+    }
+
+    .status {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* ===== 1400px+ ===== */
+@media (min-width: 1400px) {
+
+    .table-box {
+        padding: 32px;
+    }
+
+    thead th {
+        font-size: 15px;
+    }
+
+    tbody td {
+        font-size: 16px;
+    }
+}

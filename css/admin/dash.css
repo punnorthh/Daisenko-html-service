@@ -1,0 +1,259 @@
+/* ================= ROOT ================= */
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+
+    --bg: #f5f7fb;
+    --card: #ffffff;
+
+    --text: #1F2365;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+}
+
+/* ================= BASE ================= */
+html {
+    font-size: 16px;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ================= TITLE ================= */
+.overall-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #111;
+}
+
+/* ================= STATS ================= */
+.stats-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 10px 20px rgba(31, 35, 101, .08);
+}
+
+/* ใช้ class แทน nth-child */
+.stat-card.primary {
+    background: #e8f0ff;
+    color: #1e3a8a;
+}
+
+.stat-card.warning {
+    background: #fff4cc;
+    color: #7c5c00;
+}
+
+.stat-card.success {
+    background: #e8ffd9;
+    color: #166534;
+}
+
+.stat-card.danger {
+    background: #ffd9d9;
+    color: #7f1d1d;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.stat-card h2 {
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.stat-card span {
+    font-size: 14px;
+    opacity: .9;
+}
+
+/* ================= DASHBOARD ================= */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+/* ================= PANEL ================= */
+.panel {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 24px;
+    min-height: 240px;
+    box-shadow: 0 10px 30px rgba(31, 35, 101, .08);
+
+    /* scroll ที่เดียวพอ */
+    overflow-x: auto;
+}
+
+/* ================= TABLE ================= */
+.request-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+    /* สำคัญ: กัน table พัง */
+}
+
+.request-table th {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px;
+    border-bottom: 2px solid #d1d5db;
+    white-space: nowrap;
+}
+
+.request-table td {
+    text-align: center;
+    padding: 14px 12px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.request-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* ================= STATUS ================= */
+.status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status.pending {
+    background: #fff4cc;
+    color: #7c5c00;
+}
+
+.status.assigned {
+    background: #e8ffd9;
+    color: #166534;
+}
+
+.status.rejected {
+    background: #ffd9d9;
+    color: #7f1d1d;
+}
+
+/* ================= ADDRESS ================= */
+.address-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.address-link {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.address-link:hover {
+    text-decoration: underline;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Tablet */
+@media (max-width: 1024px) {
+
+    .overall-title {
+        font-size: 24px;
+    }
+
+    .stats-modern {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-card h2 {
+        font-size: 34px;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    .overall-title {
+        font-size: 22px;
+    }
+
+    .stats-modern {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-card {
+        padding: 18px;
+    }
+
+    .stat-card h2 {
+        font-size: 30px;
+    }
+
+    .panel {
+        padding: 18px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+
+    html {
+        font-size: 15px;
+    }
+
+    .overall-title {
+        font-size: 20px;
+    }
+
+    .stats-modern {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card h2 {
+        font-size: 26px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    .request-table {
+        min-width: 600px;
+    }
+}
+
+/* Extra Small */
+@media (max-width: 360px) {
+
+    html {
+        font-size: 14px;
+    }
+
+    .stat-card h2 {
+        font-size: 24px;
+    }
+
+    .request-table {
+        min-width: 550px;
+    }
+}
