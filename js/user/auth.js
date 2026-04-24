@@ -70,3 +70,19 @@
  window.addEventListener("DOMContentLoaded", () => {
   renderHeader();
 });
+
+window.addEventListener("scroll", () => {
+    document.querySelector("header")
+      .classList.toggle("scrolled", window.scrollY > 10);
+  });
+
+  document.addEventListener("click", function (e) {
+    const menu = document.getElementById("profileMenu");
+    const avatarBtn = document.querySelector(".avatar-btn");
+  
+    if (!menu || !avatarBtn) return;
+ 
+    if (!menu.contains(e.target) && !avatarBtn.contains(e.target)) {
+      menu.style.display = "none";
+    }
+  });
