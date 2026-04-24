@@ -239,6 +239,30 @@
     `;
 
         table.appendChild(tr);
+
+        /* ===== MOBILE CARD ===== */
+        mobileContainer.innerHTML += `
+        <div class="tech-card">
+            <div class="tech-row">
+            <div class="tech-label">ชื่อช่าง</div>
+            <div class="tech-value">${tech.name}</div>
+            </div>
+
+            <div class="tech-row">
+            <div class="tech-label">สถานะ</div>
+            <div class="tech-value">
+                <span class="status ${statusClass}">
+                ${statusText}
+                </span>
+            </div>
+            </div>
+
+            <div class="tech-row">
+            <div class="tech-label">งานที่รับอยู่</div>
+            <div class="tech-value">${jobText}</div>
+            </div>
+        </div>
+        `;
       });
     }
 
