@@ -1,133 +1,142 @@
-/* =============   SEARCH =============== */
-function toggleSearch() {
-    const input = document.getElementById("searchInput");
-    input.classList.toggle("show");
-    input.focus();
-  }
+let searchTimeout;
 
-  function searchHome() {
-    const keyword =
-      document.getElementById("searchInput").value.toLowerCase();
+/* ================= SEARCH ================= */
+function handleGlobalSearch() {
+  clearTimeout(searchTimeout);
 
-    document.querySelectorAll(".promo-card").forEach(card => {
-      card.style.display =
-        card.innerText.toLowerCase().includes(keyword)
-          ? "block"
-          : "none";
-    });
-  }
+  searchTimeout = setTimeout(() => {
 
-  function searchHome() {
-    const keyword = document
-      .getElementById("searchInput")
-      .value
-      .toLowerCase()
-      .trim();
+    const desktop = document.getElementById("searchInputDesktop");
+    const mobile = document.getElementById("searchInput");
 
-    const sections = document.querySelectorAll(".section");
+    const keyword = (
+      (desktop?.value || mobile?.value || "")
+    ).toLowerCase().trim();
 
-    sections.forEach(section => {
-      const text = section.innerText.toLowerCase();
+    let targets = [];
 
-      if (text.includes(keyword)) {
-        section.style.display = "block";
-      } else {
-        section.style.display = "none";
-      }
-    });
-
-    // ถ้าไม่พิมพ์อะไร ให้แสดงทั้งหมด
-    if (keyword === "") {
-      sections.forEach(section => {
-        section.style.display = "block";
-      });
-    }
-  }
-
-    const cards = document.querySelectorAll(".service-item");
-
-    cards.forEach(card => {
-      const text = card.innerText.toLowerCase();
-
-      if (keyword === "") {
-        card.style.display = "";
-      } else if (text.includes(keyword)) {
-        card.style.display = "";
-      } else {
-        card.style.display = "none";
-      }
-    });
-
-    /* =============   SEARCH  =============== */
-    function toggleSearch() {
-      const input = document.getElementById("searchInput");
-      input.classList.toggle("show");
-
-      if (input.classList.contains("show")) {
-        input.focus();
-      } else {
-        input.value = "";
-        searchHome(); // reset highlight
-      }
+    if (document.querySelector(".promo-card")) {
+      targets = document.querySelectorAll(".promo-card");
     }
 
-    function searchHome() {
-      const keyword = document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
+    if (document.querySelector(".service-item")) {
+      targets = document.querySelectorAll(".service-item");
+    }
 
-      const fields = document.querySelectorAll(
-        ".service-card label, .service-card input, .service-card textarea, .service-card select"
-      );
+    if (document.querySelector(".info-item")) {
+      targets = document.querySelectorAll(".info-item");
+    }
 
-      fields.forEach(field => {
-        field.style.outline = "";
-        field.style.backgroundColor = "";
-
-        const text =
-          (field.innerText || field.value || "")
-            .toLowerCase();
-
-        if (keyword && text.includes(keyword)) {
-          field.style.outline = "2px solid #2563eb";
-          field.style.backgroundColor = "#eef2ff";
-        }
+    /* ===== FILTER CARD ===== */
+    if (targets.length > 0) {
+      targets.forEach(el => {
+        const text = el.innerText.toLowerCase();
+        el.style.display =
+          !keyword || text.includes(keyword) ? "" : "none";
       });
     }
 
-    /* =============   SEARCH =============== */
-    function toggleSearch() {
-      const input = document.getElementById("searchInput");
-      input.classList.toggle("show");
-
-      if (input.classList.contains("show")) {
-          input.focus();
-      } else {
-          input.value = "";
-          searchHome();
-      }
-  }
-
-  function searchHome() {
-      const keyword = document
-          .getElementById("searchInput")
-          .value
-          .toLowerCase()
-          .trim();
-
-      const rows = document.querySelectorAll("#bookingTable tr");
-
-      rows.forEach(row => {
+    /* ===== TABLE ===== */
+    if (document.querySelector("#bookingTable")) {
+      document.querySelectorAll("#bookingTable tr")
+        .forEach(row => {
           const text = row.innerText.toLowerCase();
+          const name = (row.dataset.name || "").toLowerCase();
+          const phone = (row.dataset.phone || "").toLowerCase();
 
-          if (keyword === "") {
-              row.style.display = "";
-          } else if (text.includes(keyword)) {
-              row.style.display = "";
-          } else {
-              row.style.display = "none";
-          }
-      });
+          const full = text + " " + name + " " + phone;
+
+          row.style.display =
+            !keyword || full.includes(keyword) ? "" : "none";
+        });
+    }
+
+    /* ===== MOBILE CARD ===== */
+    if (document.querySelector(".booking-card")) {
+      document.querySelectorAll(".booking-card")
+        .forEach(card => {
+          const text = card.innerText.toLowerCase();
+          const name = (card.dataset.name || "").toLowerCase();
+          const phone = (card.dataset.phone || "").toLowerCase();
+
+          const full = text + " " + name + " " + phone;
+
+          card.style.display =
+            !keyword || full.includes(keyword) ? "block" : "none";
+        });
+    }
+
+  }, 250);
+}
+
+/* ================= TOGGLE SEARCH ================= */
+function toggleSearch(forceClose = false) {
+  const overlay = document.getElementById("searchOverlay");
+  const input = document.getElementById("searchInput");
+
+  if (!overlay) return;
+
+  // ถ้ามีการสั่ง force close → ปิดอย่างเดียว
+  if (forceClose) {
+    overlay.classList.remove("active");
+    return;
   }
+
+  overlay.classList.toggle("active");
+
+  if (overlay.classList.contains("active")) {
+    setTimeout(() => input?.focus(), 200);
+  } else {
+    // เอาการล้าง input ออก
+    // ไม่ต้อง handleGlobalSearch ซ้ำ
+  }
+}
+
+/* ================= CLICK OUTSIDE ================= */
+window.addEventListener("click", (e) => {
+  const overlay = document.getElementById("searchOverlay");
+
+  if (overlay?.classList.contains("active") && e.target === overlay) {
+    toggleSearch();
+  }
+});
+
+/* ================= KEYBOARD CONTROL ================= */
+document.addEventListener("keydown", (e) => {
+
+  const desktop = document.getElementById("searchInputDesktop");
+  const mobile = document.getElementById("searchInput");
+
+  /* ===== ENTER ===== */
+  if (e.key === "Enter") {
+
+    // mobile
+    if (document.activeElement === mobile) {
+      handleGlobalSearch();
+      toggleSearch();   // ปิด overlay
+      mobile.blur();
+    }
+
+    // desktop
+    if (document.activeElement === desktop) {
+      handleGlobalSearch();
+      desktop.blur();
+    }
+  }
+
+  /* ===== ESC ===== */
+  if (e.key === "Escape") {
+
+    if (desktop) desktop.value = "";
+    if (mobile) mobile.value = "";
+
+    handleGlobalSearch();
+
+    // ปิด overlay ถ้าเปิดอยู่
+    const overlay = document.getElementById("searchOverlay");
+    if (overlay?.classList.contains("active")) {
+      toggleSearch();
+    }
+  }
+
+});
