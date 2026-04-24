@@ -209,64 +209,111 @@ import { db } from "../js/admin/firebase.js";
     loadNotifications();
 
     /* ===== SEARCH ===== */
-    let currentKeyword = "";
+let currentKeyword = "";
 
-    window.toggleSearch = function () {
-      const input = document.getElementById("searchInput");
-      input.classList.toggle("show");
-      input.focus();
-    }
-    // ซ่อน search เมื่อคลิกออก (blur)
-    document.getElementById("searchInput").addEventListener("blur", function () {
-      if (!this.value) {
-        this.classList.remove("show");
-      }
-    });
+function toggleSearch() {
+    const input = document.getElementById("searchInput");
+    input.classList.toggle("show");
+    input.focus();
+}
 
-    window.searchDashboard = function () {
-      const keyword = document
-        .getElementById("searchInput")
-        .value.toLowerCase();
+// SEARCH Desktop
+function searchDashboard() {
+    const keyword =
+        document.getElementById("searchInput").value.toLowerCase();
 
-      currentKeyword = keyword;
+    currentKeyword = keyword;
 
-      const bookings =
+    const bookings =
         JSON.parse(localStorage.getItem("bookings")) || [];
 
-      const filtered = bookings.filter(b =>
+    const filtered = bookings.filter(b =>
         (b.name || "").toLowerCase().includes(keyword) ||
         (b.phone || "").toLowerCase().includes(keyword) ||
         (b.location || "").toLowerCase().includes(keyword) ||
         (b.status || "").toLowerCase().includes(keyword) ||
         (b.serviceType || "").toLowerCase().includes(keyword) ||
         (b.serviceName || "").toLowerCase().includes(keyword)
-      );
+    );
 
+    renderDashboardRequests(filtered);
+}
 
-      const box = document.getElementById("searchResultBox");
+// SEARCH Mobile
+function searchDashboardMobile() {
+    const keyword =
+        document.getElementById("searchMobileInput").value.toLowerCase();
 
-      if (keyword) {
-        box.style.display = "block";
-        box.textContent = filtered.length
-          ? `พบ ${filtered.length} รายการ`
-          : "ไม่พบข้อมูล";
-      } else {
-        box.style.display = "none";
-      }
+    currentKeyword = keyword;
 
-      renderDashboardRequests(filtered);
-    };
+    const bookings =
+        JSON.parse(localStorage.getItem("bookings")) || [];
 
+    const filtered = bookings.filter(b =>
+        (b.name || "").toLowerCase().includes(keyword) ||
+        (b.phone || "").toLowerCase().includes(keyword) ||
+        (b.location || "").toLowerCase().includes(keyword) ||
+        (b.status || "").toLowerCase().includes(keyword) ||
+        (b.serviceType || "").toLowerCase().includes(keyword) ||
+        (b.serviceName || "").toLowerCase().includes(keyword)
+    );
 
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") {
+    renderDashboardRequests(filtered);
+}
+
+document.getElementById("searchMobileInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+
+        // trigger search อีกรอบ (กันกรณี user ยังไม่ปล่อย key)
+        searchDashboardMobile();
+
+        // ปิด overlay
+        closeSearchOverlay();
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
         const input = document.getElementById("searchInput");
         input.classList.remove("show");
         input.value = "";
         currentKeyword = "";
         renderDashboardRequests();
-      }
-    });
+    }
+});
+
+function openSearch() {
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+        document.getElementById("searchOverlay").classList.add("show");
+        document.getElementById("searchMobileInput").focus();
+    } else {
+        toggleSearch(); // desktop ใช้ของเดิม
+    }
+}
+
+function closeSearchOverlay() {
+    const mobileInput = document.getElementById("searchMobileInput");
+    const desktopInput = document.getElementById("searchInput");
+
+    // sync keyword ไป desktop
+    if (desktopInput && mobileInput) {
+        desktopInput.value = mobileInput.value;
+    }
+
+    document.getElementById("searchOverlay").classList.remove("show");
+}
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        closeSearchOverlay();
+
+        const input = document.getElementById("searchInput");
+        input.classList.remove("show");
+    }
+});
 
     /* ===== DASHBOARD DATA ===== */
     function updateDashboardStats() {
