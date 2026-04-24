@@ -185,9 +185,9 @@
 
   <!-- FOOTER -->
   <div id="footer"></div>
-<script src="/js/user/auth.js"></script>
-<script src="/js/user/search.js"></script>
-<script src="/js/user/notification.js"></script>
+  <script src="/js/user/auth.js"></script>
+  <script src="/js/user/search.js"></script>
+  <script src="/js/user/notification.js"></script>
   <script>
     // โหลด header
     fetch("/components/header.html")
@@ -288,11 +288,16 @@
       showPhone.innerText = editPhone.value;
       showDob.innerText = editDob.value;
 
-      // update header
-      document.querySelector(".avatar-letter").innerText = newName.charAt(0);
-      document.querySelector(".profile-info strong").innerText = newName;
-      document.querySelector(".profile-info span").innerText = editEmail.value;
+      // ✅ ป้องกัน error (สำคัญมาก)
+      const avatar = document.querySelector(".avatar-letter");
+      const nameEl = document.querySelector(".profile-info strong");
+      const emailEl = document.querySelector(".profile-info span");
 
+      if (avatar) avatar.innerText = newName.charAt(0);
+      if (nameEl) nameEl.innerText = newName;
+      if (emailEl) emailEl.innerText = editEmail.value;
+
+      // ✅ ปิด modal แน่นอน
       closeModal();
     }
 
