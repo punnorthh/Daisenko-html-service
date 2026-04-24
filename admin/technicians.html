@@ -26,19 +26,19 @@
       <div class="sidebar-divider"></div>
 
       <a href="dashboard.html" data-link="dashboard">
-        <i class="ri-dashboard-line"></i> Dashboard
+        <i class="ri-dashboard-line"></i> แดชบอร์ด
       </a>
 
       <a href="request.html" data-link="request">
-        <i class="ri-user-line"></i> Request
+        <i class="ri-user-line"></i> รายการคำขอ
       </a>
 
       <a href="technicians.html" data-link="technicians" class="active">
-        <i class="ri-group-line"></i> Technicians
+        <i class="ri-group-line"></i> รายชื่อช่าง
       </a>
 
       <a href="service_edit.html" data-link="service_edit">
-        <i class="ri-file-list-line"></i> Service Edit
+        <i class="ri-file-list-line"></i> แก้ไขบริการ
       </a>
 
     </aside>
@@ -61,9 +61,8 @@
 
           <div class="top-nav-right">
             <div class="search-wrapper">
-              <input id="serviceSearchInput" type="text" placeholder="ค้นหา" oninput="searchTechnicians()" />
-
-              <button class="icon-btn" onclick="toggleServiceSearch()">
+              <input id="searchInput" type="text" placeholder="ค้นหา" oninput="searchTechnicians()" />
+              <button class="icon-btn" onclick="openSearch()">
                 <i class="ri-search-line"></i>
               </button>
             </div>
@@ -121,6 +120,22 @@
       </div>
 
     </main>
+  </div>
+
+  <!-- SEARCH OVERLAY -->
+  <div id="searchOverlay" class="search-overlay">
+    <div class="search-panel">
+      <div class="search-header">
+        <i class="ri-search-line"></i>
+        <input type="text" id="searchMobileInput" placeholder="ค้นหา..." oninput="searchTechnicians()">
+        <button onclick="closeSearchOverlay()">✕</button>
+      </div>
+
+      <div class="search-body">
+        <p class="search-title">การค้นหายอดนิยม</p>
+        <div id="searchResults"></div>
+      </div>
+    </div>
   </div>
 
   <script>
