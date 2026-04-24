@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daisenko | ประวัติการจองของฉัน</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/user/style.css">
+    <link rel="stylesheet" href="/css/user/history.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div id="header"></div>
+
+    <!-- MAIN -->
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <h1>ประวัติการจองของฉัน</h1>
+
+                <div class="filters">
+                    <button class="filter active" onclick="filterBooking('all', this)">All</button>
+                    <button class="filter" onclick="filterBooking('pending', this)">Pending</button>
+                    <button class="filter" onclick="filterBooking('assigned', this)">Completed</button>
+                    <button class="filter" onclick="filterBooking('rejected', this)">Rejected</button>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รหัสการจอง</th>
+                            <th>บริการ</th>
+                            <th>วัน / เวลา</th>
+                            <th>สถานที่</th>
+                            <th>สถานะ</th>
+                            <th>การดำเนินการ</th>
+                            <th>หมายเหตุจากระบบ</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="bookingTable"></tbody>
+                </table>
+            </div>
+            <!-- MOBILE CARD VIEW -->
+            <div class="mobile-booking-list" id="mobileBookingList"></div>
+        </div>
+    </main>
+
+    <!-- MODAL -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-card" id="modalContent">
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div id="footer"></div>
+
+    <script src="/js/user/auth.js"></script>
+    <script src="/js/user/search.js"></script>
+    <script src="/js/user/notification.js"></script>
+    <script>
+        // โหลด header
+        fetch("/components/header.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("header").innerHTML = data;
+                renderHeader();
+                loadNotifications();
+            });
+
+        // โหลด footer
+        fetch("/components/footer.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("footer").innerHTML = data;
+            });
+
+        /* =============   UTIL SAFE JSON ================== */
+        function getJSON(key, fallback = null) {
+            try {
+                return JSON.parse(localStorage.getItem(key)) ?? fallback;
+            } catch {
+                return fallback;
+            }
+        }
+
+        /* ============= BOOKING TABLE =============== */
+        const table = document.getElementById("bookingTable");
+        const bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+        bookings.sort((a, b) => {
+            return new Date(b.bookedTime || 0) - new Date(a.bookedTime || 0);
+        });
+
+        bookings.forEach((b, i) => {
+            const tr = document.createElement("tr");
+            tr.id = `booking-${b.id}`;
+            tr.dataset.index = i;
+            tr.dataset.status = b.status;
+            tr.dataset.cancelType = b.cancelType || "";
+            tr.dataset.bookedTime = b.bookedTime;
+
+            tr.innerHTML = `
+                <td data-label="รหัสการจอง"> #${b.id} </td>
+
+                <td data-label="บริการ">
+                    ล้างแอร์ (${b.service})
+                </td>
+
+                <td data-label="วัน / เวลา">
+                    ${b.date || "-"}<br>
+                    ${new Date(b.bookedTime).toLocaleTimeString()}
+                </td>
+
+                <td data-label="สถานที่">
+                    ${b.location}
+                </td>
+
+                <td data-label="สถานะ">
+                    <span class="status ${b.status}">
+                        ${b.status === "pending" ? "รอดำเนินการ" :
+                    b.status === "assigned" ? "จัดช่างแล้ว" :
+                        b.status === "completed" ? "สำเร็จ" :
+                            b.status === "cancelled" && b.cancelType === "rejected"
+                                ? "ถูกปฏิเสธ"
+                                : "ยกเลิกโดยระบบ"}
+                    </span>
+                </td>
+
+                <td data-label="การดำเนินการ" class="action">
+                    <a href="#" onclick="openModal(${i})">ดูรายละเอียด</a>
+                </td>
+
+                <td data-label="หมายเหตุจากระบบ" class="note">
+                    ${getSystemNote(b)}
+                </td>
+            `;
+            const noteCell = tr.querySelector('.note');
+
+            if (b.status === "cancelled") {
+                noteCell.style.color = "#b91c1c";
+                noteCell.style.fontWeight = "500";
+            }
+
+            if (b.status === "pending") {
+                noteCell.style.color = "#c2410c";
+            }
+
+            table.appendChild(tr);
+        });
+        renderMobileCards();
+
+        function filterBooking(status, el) {
+
+            document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+
+            // ===== DESKTOP TABLE =====
+            document.querySelectorAll('#bookingTable tr').forEach(row => {
+
+                const rowStatus = row.dataset.status;
+                const cancelType = row.dataset.cancelType;
+
+                let show = false;
+
+                if (status === 'all') show = true;
+
+                if (status === 'pending' && rowStatus === 'pending') show = true;
+
+                if (status === 'assigned' && rowStatus === 'assigned') show = true;
+
+                if (
+                    status === 'rejected' &&
+                    rowStatus === 'cancelled' &&
+                    cancelType === 'rejected'
+                ) show = true;
+
+                row.style.display = show ? '' : 'none';
+            });
+
+
+            // ===== MOBILE CARD =====
+            document.querySelectorAll('.booking-card').forEach(card => {
+
+                const rowStatus = card.dataset.status;
+                const cancelType = card.dataset.cancelType;
+
+                let show = false;
+
+                if (status === 'all') show = true;
+
+                if (status === 'pending' && rowStatus === 'pending') show = true;
+
+                if (status === 'assigned' && rowStatus === 'assigned') show = true;
+
+                if (
+                    status === 'rejected' &&
+                    rowStatus === 'cancelled' &&
+                    cancelType === 'rejected'
+                ) show = true;
+
+                card.style.display = show ? 'block' : 'none';
+            });
+
+        }
+
+        function openModal(index) {
+            const b = bookings[index];
+            const modal = document.getElementById("bookingModal");
+            const content = document.getElementById("modalContent");
+
+            content.innerHTML = `
+                <h3>รายละเอียดการจอง</h3>
+                <p><strong>รหัส:</strong> #${b.id}</p>
+                <p><strong>ชื่อ:</strong> ${b.name}</p>
+                <p><strong>โทร:</strong> ${b.phone}</p>
+                <p><strong>บริการ:</strong> ล้างแอร์ (${b.service})</p>
+                <p><strong>วัน:</strong> ${b.date || "-"}</p>
+                <p><strong>สถานที่:</strong> ${b.location}</p>
+                <p><strong>หมายเหตุ:</strong> ${b.note || "-"}</p>
+
+                <div class="modal-actions">
+                    <button class="btn-outline" onclick="closeModal()">ปิด</button>
+                    <button class="btn-primary" onclick="rebook('${b.id}')">จองซ้ำ</button>
+                </div>
+            `;
+
+            modal.style.display = "flex";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("bookingModal");
+            modal.style.display = "none";
+        }
+
+        function rebook(id) {
+            const booking = bookings.find(b => String(b.id) === String(id));
+
+            if (!booking) {
+                alert("ไม่พบข้อมูลการจอง");
+                return;
+            }
+
+            const cleanData = {
+                name: booking.name,
+                phone: booking.phone,
+                amount: booking.service,
+                date: booking.date,
+                location: booking.location,
+            };
+
+            localStorage.setItem("rebookData", JSON.stringify(cleanData));
+            window.location.href = "booking.html";
+        }
+
+        window.onclick = function (e) {
+            if (e.target.classList.contains('modal')) closeModal();
+        }
+
+        /* ===== AUTO NOTICE SYSTEM ===== */
+        function checkBookingTimeout() {
+            const now = new Date();
+
+            document.querySelectorAll('tbody tr').forEach((row, i) => {
+                const status = row.dataset.status;
+                const bookedTime = row.dataset.bookedTime;
+                const noteCell = row.querySelector('.note');
+                const statusCell = row.querySelector('td:nth-child(5)');
+
+                if (status === 'pending' && bookedTime) {
+                    const bookedDate = new Date(bookedTime);
+                    const diffMin = (now - bookedDate) / 1000 / 60;
+
+                    if (diffMin > 15) {
+                        bookings[i].status = "cancelled";
+                        bookings[i].cancelType = "auto";
+                        bookings[i].systemNote = "ไม่มีช่างว่างภายในเวลาที่กำหนด ระบบยกเลิกอัตโนมัติ";
+                        bookings[i].cancelType = "auto";
+
+                        localStorage.setItem("bookings", JSON.stringify(bookings));
+
+                        // เปลี่ยน dataset
+                        row.dataset.status = "cancelled";
+
+                        // เปลี่ยน UI
+                        statusCell.innerHTML = `<span class="status cancelled">ยกเลิก</span>`;
+                        noteCell.innerHTML = "ไม่มีช่างว่างภายในเวลาที่กำหนด ระบบยกเลิกอัตโนมัติ";
+                        noteCell.style.color = "#b91c1c";
+                        noteCell.style.fontWeight = "500";
+                    } else {
+                        noteCell.innerHTML = "กำลังค้นหาช่างให้คุณ...";
+                        noteCell.style.color = "#c2410c";
+                    }
+                }
+            });
+        }
+
+        checkBookingTimeout();
+
+        setInterval(checkBookingTimeout, 30000);
+
+        window.addEventListener("load", () => {
+            const bookingId = location.hash.replace("#", "");
+            if (!bookingId) return;
+
+            setTimeout(() => {
+                const row = document.getElementById(`booking-${bookingId}`);
+                if (!row) return;
+
+                row.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+                row.style.background = "#eef2ff";
+                row.style.transition = "background 0.5s";
+
+                setTimeout(() => row.style.background = "", 3000);
+            }, 300);
+        });
+
+        window.addEventListener("storage", (event) => {
+            if (event.key === "bookings") {
+                const updated = JSON.parse(event.newValue || "[]");
+                syncBookingUpdates(updated);
+            }
+        });
+
+        function syncBookingUpdates(updatedBookings) {
+            updatedBookings.forEach((b, i) => {
+                const row = document.getElementById(`booking-${b.id}`);
+                if (!row) return;
+
+                updateBookingRow(row, b);
+            });
+        }
+        function updateBookingRow(row, booking) {
+            const statusCell = row.querySelector('td:nth-child(5)');
+            const noteCell = row.querySelector('.note');
+
+            // ===== UPDATE DATASET =====
+            row.dataset.status = booking.status;
+            row.dataset.cancelType = booking.cancelType || "";
+
+            // ===== UPDATE STATUS UI =====
+            let statusText = "";
+            let statusClass = booking.status;
+
+            if (booking.status === "pending") {
+                statusText = "รอดำเนินการ";
+            } else if (booking.status === "assigned") {
+                statusText = "จัดช่างแล้ว";
+            } else if (booking.status === "completed") {
+                statusText = "สำเร็จ";
+            } else if (booking.status === "cancelled") {
+                if (booking.cancelType === "rejected") {
+                    statusText = "ถูกปฏิเสธ";
+                } else {
+                    statusText = "ยกเลิกโดยระบบ";
+                }
+            }
+
+            statusCell.innerHTML = `
+                <span class="status ${statusClass}">
+                    ${statusText}
+                </span>
+            `;
+
+            // ===== UPDATE NOTE =====
+            noteCell.textContent = getSystemNote(booking);
+
+            if (booking.status === "cancelled") {
+                noteCell.style.color = "#b91c1c";
+                noteCell.style.fontWeight = "500";
+            } else if (booking.status === "pending") {
+                noteCell.style.color = "#c2410c";
+            } else {
+                noteCell.style.color = "";
+                noteCell.style.fontWeight = "";
+            }
+
+            // ===== APPLY CURRENT FILTER =====
+            applyCurrentFilter(row);
+        }
+
+        function applyCurrentFilter(row) {
+            const active = document.querySelector('.filter.active');
+            if (!active) return;
+
+            const status = active.textContent.toLowerCase();
+            const rowStatus = row.dataset.status;
+            const cancelType = row.dataset.cancelType;
+
+            let show = false;
+
+            if (status === "all") show = true;
+            if (status === "pending" && rowStatus === "pending") show = true;
+            if (status === "completed" && rowStatus === "assigned") show = true;
+            if (
+                status === "rejected" &&
+                rowStatus === "cancelled" &&
+                cancelType === "rejected"
+            ) show = true;
+
+            row.style.display = show ? "" : "none";
+        }
+        function getSystemNote(booking) {
+            if (booking.status === "cancelled" && booking.cancelType === "auto") {
+                return booking.systemNote || "ไม่มีช่างว่างภายในเวลาที่กำหนด ระบบยกเลิกอัตโนมัติ";
+            }
+
+            if (booking.status === "cancelled" && booking.cancelType === "rejected") {
+                return booking.adminNote || "รายการถูกปฏิเสธโดยเจ้าหน้าที่";
+            }
+
+            if (booking.status === "pending") {
+                return "กำลังค้นหาช่างให้คุณ...";
+            }
+
+            if (booking.status === "assigned") {
+                return "จัดช่างเรียบร้อยแล้ว";
+            }
+
+            if (booking.status === "completed") {
+                return "-";
+            }
+
+            return "-";
+        }
+
+        function renderMobileCards() {
+
+            const container = document.getElementById("mobileBookingList");
+            container.innerHTML = "";
+
+            bookings.forEach((b, i) => {
+
+                const card = document.createElement("div");
+                card.className = "booking-card";
+                card.dataset.status = b.status;
+                card.dataset.cancelType = b.cancelType || "";
+
+                let statusText = "";
+                if (b.status === "pending") statusText = "รอดำเนินการ";
+                else if (b.status === "assigned") statusText = "จัดช่างแล้ว";
+                else if (b.status === "completed") statusText = "สำเร็จ";
+                else if (b.status === "cancelled" && b.cancelType === "rejected") statusText = "ถูกปฏิเสธ";
+                else statusText = "ยกเลิกโดยระบบ";
+
+                card.innerHTML = `
+                    <div class="card-top">
+                        <div class="card-id">#${b.id}</div>
+                        <span class="status ${b.status}">${statusText}</span>
+                    </div>
+
+                    <div class="card-service">
+                        ล้างแอร์ (${b.service})
+                    </div>
+
+                    <div class="card-info">
+                        📅 ${b.date || "-"} • ${new Date(b.bookedTime).toLocaleTimeString()}
+                    </div>
+
+                    <div class="card-info">
+                        📍 ${b.location}
+                    </div>
+
+                    <div class="card-bottom">
+                        <div class="card-note">
+                            ${getSystemNote(b)}
+                        </div>
+
+                        <div class="card-action">
+                            <a href="#" onclick="openModal(${i})">ดูรายละเอียด</a>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>

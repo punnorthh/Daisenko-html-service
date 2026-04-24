@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technicians | Daisenko</title>
+
+    <!-- ICON -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #1F2365;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR LOGO ===== */
+        .sidebar-logo {
+            margin: 10px 10px;
+            padding: 0 0 14px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sidebar-logo img {
+            width: 160px;
+            display: block;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid var(--border);
+            padding: 12px 18px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .sidebar.closed {
+            transform: translateX(-100%);
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            flex: 1;
+            margin-left: 240px;
+            transition: margin-left 0.3s ease;
+            min-width: 0;
+        }
+
+        .main.full {
+            margin-left: 0;
+        }
+
+        /* ===== Mobile ===== */
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0 !important;
+            }
+        }
+
+        /* overlay */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            color: #111;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #b9bcc28d;
+        }
+
+        /* ===== TOP NAV BAR ===== */
+        .top-nav {
+            padding: 18px 28px 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .top-left-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: nowrap;
+        }
+
+        .top-divider {
+            height: 2px;
+            background: #d6d6d6;
+        }
+
+        .top-nav-left {
+            flex: 0 0 auto;
+        }
+
+        .top-nav-menu {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .top-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-logo {
+            height: 36px;
+        }
+
+        .top-nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 1000px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #111;
+            text-decoration: none;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .top-nav-menu a.active,
+        .top-nav-menu a:hover {
+            background: #b9bcc28d;
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .topbar {
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .content {
+            padding: 18px 28px 28px;
+        }
+
+        /* ===== TOPBAR ICON STYLE ===== */
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: #111;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: #f9fafb;
+        }
+
+        /* ===== USER BUTTON ===== */
+        .user-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 10px 6px 6px;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #111;
+        }
+
+        .user-btn:hover {
+            background: #f9fafb;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        /* ===== USER DROPDOWN ===== */
+        .user-wrapper {
+            position: relative;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 52px;
+            right: 0;
+            width: 160px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .15);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .user-dropdown button {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #ef4444;
+        }
+
+        .user-dropdown button:hover {
+            background: #f9fafb;
+        }
+
+        /* ===== NOTIFICATION ===== */
+        .notification-wrapper {
+            position: relative;
+        }
+
+        .notification-icon {
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .notify-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 2px;
+            border-radius: 900px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #fff;
+            animation: pop 0.25s ease;
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            width: 320px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .15);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .notification-dropdown::before {
+            content: "Notifications";
+            display: block;
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .notification-dropdown ul {
+            list-style: none;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .notify-item {
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background .2s;
+        }
+
+        .notify-item:hover {
+            background: #f9fafb;
+        }
+
+        .notify-item.unread {
+            background: #eef2ff;
+        }
+
+        .notify-text {
+            font-size: 14px;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .notify-time {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .notification-dropdown li {
+            padding: 14px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .notification-dropdown li.empty {
+            padding: 24px;
+            text-align: center;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .notification-dropdown li.unread {
+            font-weight: 600;
+            background: #eef2ff;
+        }
+
+        .notification-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+        }
+
+        /* ===== SEARCH ===== */
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        #serviceSearchInput {
+            position: absolute;
+            right: 52px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            opacity: 0;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1.5px solid var(--border);
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        #serviceSearchInput.show {
+            width: 180px;
+            opacity: 1;
+        }
+
+        mark {
+            background: #fff59d;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+            font-size: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .no-results i {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.6;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== CONTENT ===== */
+        .content {
+            padding: 28px;
+        }
+
+        /* ===== TABLE PANEL ===== */
+        .table-box {
+            background: #fff;
+            padding: 26px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(31, 35, 101, .08);
+        }
+
+        .table-box h2 {
+            margin-bottom: 18px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1F2365;
+        }
+
+        /* ===== TABLE ===== */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #f1f5f9;
+        }
+
+        thead th {
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            padding: 14px 16px;
+            text-align: center;
+        }
+
+        tbody td {
+            padding: 16px;
+            font-size: 15px;
+            border-top: 1px solid #f1f5f9;
+            text-align: center;
+        }
+
+        tbody tr {
+            transition: all .2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        tbody td:first-child {
+            font-weight: 600;
+            color: #1F2365;
+        }
+
+        /* ===== STATUS BADGE ===== */
+        .status {
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 90px;
+        }
+
+        /* AVAILABLE */
+        .available {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* BUSY */
+        .busy {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* OFFLINE */
+        .offline {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        /* ======= MOBILE RESPONSIVE FULL FIX ======== */
+        html,
+        body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ===== Tablet ===== */
+        @media (max-width:1024px) {
+            .top-nav {
+                padding: 14px 18px 6px;
+            }
+
+            .icon-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+
+            .user-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+
+            .content {
+                padding: 16px 16px 20px;
+            }
+
+            .table-box {
+                padding: 16px;
+            }
+
+        }
+
+        /* ===== Mobile ===== */
+        @media (max-width:768px) {
+            .top-nav {
+                padding: 12px 14px 6px;
+            }
+
+            .top-row {
+                gap: 10px;
+            }
+
+            .icon-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 17px;
+            }
+
+            .user-btn {
+                padding: 4px 6px;
+            }
+
+            .user-avatar {
+                width: 25px;
+                height: 25px;
+                font-size: 15px;
+            }
+
+            .top-nav-right {
+                gap: 8px;
+            }
+
+            /* SIDEBAR */
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                width: 260px;
+            }
+
+            .sidebar.closed {
+                transform: translateX(-100%);
+            }
+
+            .main {
+                margin-left: 0 !important;
+                width: 100%;
+            }
+
+            .top-nav {
+                padding: 14px 16px 6px;
+            }
+
+            .top-row {
+                flex-wrap: nowrap;
+                gap: 12px;
+            }
+
+            .top-left-group {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                width: auto;
+            }
+
+            .top-nav-right {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                width: auto;
+            }
+
+            /* USER */
+            .user-name {
+                display: none;
+            }
+
+            .user-btn {
+                padding: 6px;
+            }
+
+            /* ICON */
+            .icon-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+
+            /* SEARCH */
+            #serviceSearchInput.show {
+                width: 140px;
+            }
+
+            /* CONTENT */
+            .content {
+                padding: 16px;
+            }
+
+            /* TABLE PANEL */
+            .table-box {
+                overflow-x: auto;
+                padding: 16px;
+                border-radius: 14px;
+            }
+
+            table {
+                min-width: 600px;
+            }
+
+            thead th {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            tbody td {
+                font-size: 13px;
+                padding: 10px;
+            }
+        }
+
+        /* ===== Small Mobile ===== */
+        @media (max-width:480px) {
+            .top-nav {
+                padding: 10px 10px 6px;
+            }
+
+            .icon-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+
+            .user-avatar {
+                width: 26px;
+                height: 26px;
+                font-size: 14px;
+            }
+
+            .top-nav-right {
+                gap: 6px;
+            }
+
+            .top-left-group {
+                gap: 8px;
+            }
+
+            #serviceSearchInput {
+                width: 120px;
+            }
+
+        }
+
+        /* ===== MOBILE CARD TABLE ===== */
+        @media (max-width:640px) {
+
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+                width: 100%;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tbody {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+
+            tbody tr {
+                background: #fff;
+                border-radius: 16px;
+                padding: 18px 18px;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, .06);
+            }
+
+            /* FIX ALIGNMENT */
+            tbody td {
+                display: grid;
+                grid-template-columns: 110px 1fr;
+                align-items: center;
+                padding: 8px 0;
+                font-size: 14px;
+                gap: 10px;
+            }
+
+            tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #64748b;
+            }
+
+        }
+    </style>
+</head>
+
+<body data-page="technicians">
+
+    <div class="layout">
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar">
+            <!-- LOGO -->
+            <div class="sidebar-logo">
+                <img src="/images/logo.png" alt="Daisenko Logo">
+            </div>
+            <div class="sidebar-divider"></div>
+
+            <a href="dashboard.html" data-link="dashboard">
+                <i class="ri-dashboard-line"></i> Dashboard
+            </a>
+
+            <a href="request.html" data-link="request">
+                <i class="ri-user-line"></i> Request
+            </a>
+
+            <a href="technicians.html" data-link="technicians" class="active">
+                <i class="ri-group-line"></i> Technicians
+            </a>
+
+            <a href="service_edit.html" data-link="service_edit">
+                <i class="ri-file-list-line"></i> Service Edit
+            </a>
+
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- ===== TOP NAV ===== -->
+            <nav class="top-nav">
+
+                <!-- TOP ROW -->
+                <div class="top-row">
+                    <div class="top-left-group">
+                        <button class="icon-btn" onclick="toggleSidebar()">
+                            <i class="ri-menu-line"></i>
+                        </button>
+
+                        <!-- <h1 class="page-title">Technicians</h1> -->
+                    </div>
+
+                    <div class="top-nav-right">
+                        <div class="search-wrapper">
+                            <input id="serviceSearchInput" type="text" placeholder="ค้นหา"
+                                oninput="searchTechnicians()" />
+
+                            <button class="icon-btn" onclick="toggleServiceSearch()">
+                                <i class="ri-search-line"></i>
+                            </button>
+                        </div>
+
+                        <div class="notification-wrapper">
+                            <button class="icon-btn" onclick="toggleNotification()">
+                                <i class="ri-notification-3-line"></i>
+                                <span id="notifyCount" class="notify-badge">0</span>
+                            </button>
+                            <div id="notificationDropdown" class="notification-dropdown">
+                                <ul id="notificationList"></ul>
+                            </div>
+                        </div>
+
+                        <div class="user-wrapper">
+                            <button class="user-btn" onclick="toggleUserMenu()">
+                                <span class="user-avatar" id="profileAvatar"></span>
+
+                                <span class="user-name" id="profileName"></span>
+                                <i class="ri-arrow-down-s-line"></i>
+                            </button>
+
+                            <div id="userDropdown" class="user-dropdown">
+                                <button onclick="logout()">
+                                    <i class="ri-logout-box-r-line"></i>
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DIVIDER -->
+                <div class="top-divider"></div>
+            </nav>
+
+            <!-- CONTENT -->
+            <div class="content">
+                <section class="table-box">
+                    <h2>สถานะช่าง</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ชื่อช่าง</th>
+                                <th>สถานะ</th>
+                                <th>งานที่รับอยู่</th>
+                            </tr>
+                        </thead>
+                        <tbody id="techTable">
+                            <!-- JS render -->
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        /* ================= CONFIG ================= */
+        const API_BASE_URL = "http://localhost:3000/api";
+
+        function getToken() {
+            return localStorage.getItem("token");
+        }
+
+        /* ================= FETCH ================= */
+        async function apiFetch(endpoint, options = {}) {
+            try {
+                const res = await fetch(API_BASE_URL + endpoint, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + getToken(),
+                        ...options.headers
+                    },
+                    ...options
+                });
+
+                if (res.status === 401) {
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                    return null;
+                }
+
+                if (!res.ok) throw new Error("API ERROR");
+
+                return await res.json();
+
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+
+        /* ================= API ================= */
+        const API = {
+            PROFILE: "/admin/me",
+            LOGOUT: "/admin/logout",
+            NOTIFICATIONS: "/notifications",
+            READ_NOTIFICATION: (id) => `/notifications/${id}/read`,
+            TECHNICIANS: "/technicians",
+            BOOKINGS: "/bookings",
+            PRODUCTS: "/products" // 🔥 เพิ่ม
+        };
+
+        /* ================= SIDEBAR ================= */
+        function toggleSidebar() {
+            const sidebar = document.querySelector(".sidebar");
+            const main = document.querySelector(".main");
+            const overlay = document.querySelector(".sidebar-overlay");
+
+            const isMobile = window.innerWidth <= 900;
+
+            if (isMobile) {
+                sidebar.classList.toggle("open");
+
+                if (sidebar.classList.contains("open")) {
+                    const ov = document.createElement("div");
+                    ov.className = "sidebar-overlay";
+                    ov.onclick = toggleSidebar;
+                    document.body.appendChild(ov);
+                } else {
+                    if (overlay) overlay.remove();
+                }
+            } else {
+                sidebar.classList.toggle("closed");
+                main.classList.toggle("full");
+            }
+        }
+
+        /* ================= AUTH ================= */
+        function guardPage() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "login.html";
+            }
+        }
+
+        async function checkAuth() {
+            const admin = await apiFetch(API.PROFILE);
+
+            if (!admin) {
+                localStorage.removeItem("token");
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById("profileName").textContent = admin.username;
+            document.getElementById("profileAvatar").textContent =
+                admin.username.charAt(0).toUpperCase();
+        }
+
+        async function logout() {
+            await apiFetch(API.LOGOUT, { method: "POST" });
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+        }
+
+        /* ================= USER MENU ================= */
+        function toggleUserMenu() {
+            const dropdown = document.getElementById("userDropdown");
+            const overlay = document.querySelector(".user-overlay");
+
+            if (overlay) {
+                dropdown.style.display = "none";
+                overlay.remove();
+                return;
+            }
+
+            dropdown.style.display = "block";
+
+            const ov = document.createElement("div");
+            ov.className = "user-overlay";
+            ov.style.position = "fixed";
+            ov.style.inset = "0";
+            ov.style.zIndex = "999";
+            ov.onclick = toggleUserMenu;
+            document.body.appendChild(ov);
+        }
+
+        /* ================= NOTIFICATION ================= */
+        async function loadNotifications() {
+            const data = await apiFetch(API.NOTIFICATIONS);
+            if (!data) return;
+
+            const list = document.getElementById("notificationList");
+            const badge = document.getElementById("notifyCount");
+
+            list.innerHTML = "";
+
+            const unread = data.filter(n => !n.read);
+            badge.textContent = unread.length;
+
+            data.forEach(n => {
+                const li = document.createElement("li");
+                li.textContent = n.message;
+
+                li.onclick = async () => {
+                    await apiFetch(API.READ_NOTIFICATION(n.id), { method: "PUT" });
+                    loadNotifications();
+                };
+
+                list.appendChild(li);
+            });
+        }
+
+        /* ================= TECHNICIANS ================= */
+        let technicians = [];
+        let bookings = [];
+
+        async function loadTechnicians() {
+            technicians = await apiFetch(API.TECHNICIANS) || [];
+            renderTechnicians();
+        }
+
+        async function loadBookings() {
+            bookings = await apiFetch(API.BOOKINGS) || [];
+            renderTechnicians();
+        }
+
+        function renderTechnicians() {
+            const table = document.getElementById("techTable");
+            if (!table) return;
+
+            table.innerHTML = "";
+
+            technicians.forEach(tech => {
+                const activeJobs = bookings.filter(
+                    b => b.tech === tech.name && b.status === "assigned"
+                );
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${tech.name}</td>
+                    <td>${activeJobs.length > 0 ? "ไม่ว่าง" : "ว่าง"}</td>
+                    <td>${activeJobs.length || "-"}</td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        /* ================= PRODUCT (NEW FROM OLD CODE) ================= */
+        let products = [];
+        let currentType = "all";
+
+        async function loadProducts() {
+            products = await apiFetch(API.PRODUCTS) || [];
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const container = document.querySelector(".product-container");
+            if (!container) return;
+
+            container.innerHTML = "";
+
+            products.forEach(p => {
+                if (currentType !== "all" && p.type !== currentType) return;
+
+                const card = document.createElement("div");
+                card.className = "product-card";
+                card.innerHTML = `
+                    <img src="${p.img}">
+                    <div class="product-title">${p.title}</div>
+                `;
+
+                card.onclick = () =>
+                    openQuickView(p.title, p.sub, p.desc, p.img);
+
+                container.appendChild(card);
+            });
+        }
+
+        function filterProducts(type) {
+            currentType = type;
+            renderProducts();
+        }
+
+        /* ================= SEARCH ================= */
+        function searchProducts() {
+            const input = document.getElementById("search");
+            const keyword = input.value.toLowerCase();
+
+            const cards = document.querySelectorAll(".product-card");
+
+            cards.forEach(card => {
+                const title = card.querySelector(".product-title").textContent.toLowerCase();
+                card.style.display = title.includes(keyword) ? "flex" : "none";
+            });
+        }
+
+        /* ================= QUICK VIEW ================= */
+        function openQuickView(title, sub, desc, img) {
+            document.getElementById("panelTitle").textContent = title;
+            document.getElementById("panelSub").textContent = sub;
+            document.getElementById("panelDesc").textContent = desc;
+            document.getElementById("panelImg").src = img;
+
+            document.getElementById("quickPanel").classList.add("active");
+            document.getElementById("quickOverlay").classList.add("active");
+        }
+
+        function closeQuickView() {
+            document.getElementById("quickPanel").classList.remove("active");
+            document.getElementById("quickOverlay").classList.remove("active");
+        }
+
+        /* ================= HAMBURGER ================= */
+        function toggleMenu() {
+            document.getElementById("menu").classList.toggle("show");
+            document.getElementById("hamburger").classList.toggle("active");
+            document.getElementById("overlay").classList.toggle("show");
+        }
+
+        document.getElementById("overlay")?.addEventListener("click", () => {
+            toggleMenu();
+        });
+
+        /* ================= INIT ================= */
+        document.addEventListener("DOMContentLoaded", () => {
+            guardPage();  
+            checkAuth();
+            loadNotifications();
+            loadTechnicians();
+            loadBookings();
+            loadProducts();
+        });
+
+        /* ================= AUTO REFRESH ================= */
+        setInterval(() => {
+            checkAuth();
+            loadNotifications();
+            loadTechnicians();
+            loadBookings();
+        }, 10000);
+    </script>
+
+
+</body>
+
+</html>

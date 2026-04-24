@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daisenko | บัญชีของฉัน</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #0b1f44;
+            --accent: #2563eb;
+            --bg: #f4f6fb;
+            --card: #fff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --radius: 18px;
+            --shadow: 0 20px 50px rgba(15, 23, 42, .06);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 24px;
+        }
+
+        /* ===== NAV ===== */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav {
+            height: 72px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 42px;
+        }
+
+        /* ===== AVATAR ===== */
+        .profile {
+            position: relative;
+        }
+
+        .avatar-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .avatar-letter {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 1px #e5e7eb;
+        }
+
+        .avatar-btn:hover .avatar-letter {
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .avatar-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        /* PROFILE MENU */
+        .profile-menu {
+            position: absolute;
+            right: 0;
+            top: 54px;
+            background: #ffffff;
+            width: 220px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            display: none;
+            overflow: hidden;
+        }
+
+        .profile-info {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .profile-info strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .profile-info span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .profile-menu a {
+            display: block;
+            padding: 12px 16px;
+            font-size: 14px;
+        }
+
+        .profile-menu a:hover {
+            background: #f1f5f9;
+        }
+
+        .logout {
+            color: #dc2626;
+        }
+
+        /* ===== NAV RIGHT ===== */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* ICON BUTTON */
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1.5px solid #e5e7eb;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: #f9fafb;
+        }
+
+        /* SEARCH */
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #searchInput {
+            flex: 0 0 auto;
+            width: 0;
+            opacity: 0;
+            padding: 8px 0;
+            border-radius: 999px;
+            border: 1.5px solid #e5e7eb;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+            transition: width .3s ease, opacity .2s ease, padding .3s ease;
+        }
+
+        #searchInput.show {
+            width: 200px;
+            opacity: 1;
+            padding: 8px 14px;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* NOTIFICATION */
+        .notification-wrapper {
+            position: relative;
+        }
+
+        .notify-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 2px;
+            border-radius: 900px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #fff;
+            animation: pop 0.25s ease;
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 52px;
+            right: 0;
+            width: 320px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, .18);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .notification-dropdown::before {
+            content: "Notifications";
+            display: block;
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .notification-dropdown.show {
+            display: block;
+        }
+
+        .notification-dropdown ul {
+            list-style: none;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .notification-dropdown li {
+            padding: 14px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background .2s;
+        }
+
+        .notification-dropdown li:hover {
+            background: #f9fafb;
+        }
+
+        .notification-dropdown li.unread {
+            font-weight: 600;
+            background: #eef2ff;
+        }
+
+        .notification-dropdown li.empty {
+            padding: 24px;
+            text-align: center;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        /* ===== MAIN ===== */
+        main {
+            flex: 1;
+            padding: 56px 0;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        /* ===== FILTER ===== */
+        .filters {
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 999px;
+            display: inline-flex;
+            gap: 6px;
+            box-shadow: inset 0 0 0 1px #e5e7eb;
+        }
+
+        .filter {
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .filter.active {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        /* PROFILE HERO */
+        .profile-hero {
+            background: #fff;
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: #fff;
+            font-size: 32px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-hero h2 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .profile-hero p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* SECTION */
+        .section {
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .05);
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .edit-btn {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        /* GRID INFO */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 32px 48px;
+        }
+
+        .info-item {
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-radius: 14px;
+        }
+
+        .info-item span {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .info-item strong {
+            font-size: 15px;
+            font-weight: 500;
+            color: #0f172a;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal {
+            background: #fff;
+            width: 420px;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-header button {
+            border: none;
+            background: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .modal-body label {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 12px;
+        }
+
+        .modal-body input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            margin-top: 4px;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .save-btn {
+            background: #f97316;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* ================= MOBILE OPTIMIZATION ================= */
+
+        @media (max-width: 1024px) {
+
+            main {
+                padding: 40px 0;
+            }
+
+            .profile-hero {
+                padding: 24px;
+                gap: 16px;
+            }
+
+            .profile-pic {
+                width: 64px;
+                height: 64px;
+                font-size: 24px;
+            }
+
+            .profile-hero h2 {
+                font-size: 18px;
+            }
+
+            .section {
+                padding: 22px;
+            }
+
+            .info-grid {
+                gap: 20px;
+            }
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 18px;
+            }
+
+            .nav {
+                height: 64px;
+            }
+
+            .logo img {
+                height: 34px;
+            }
+
+            .nav-right {
+                gap: 10px;
+            }
+
+            .profile-hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .modal {
+                width: 92%;
+            }
+        }
+
+        /* SMALL PHONES */
+        @media (max-width: 420px) {
+            h1 {
+                font-size: 22px;
+            }
+
+            .profile-hero {
+                padding: 18px;
+            }
+
+            .section {
+                padding: 18px;
+            }
+
+            .info-item {
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .notification-dropdown {
+                width: 280px;
+            }
+        }
+
+        /* FOOTER */
+        footer {
+            background: #004aad;
+            color: #fff;
+            text-align: center;
+            padding: 26px;
+            font-size: 13px
+        }
+
+        @media(max-width:900px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-hero {
+                flex-direction: row;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <header>
+        <div class="container nav">
+            <div class="logo">
+                <a href="home.html">
+                    <img src="/images/logo.png" alt="Daisenko Logo">
+                </a>
+            </div>
+
+            <div class="nav-right">
+                <div class="search-wrapper">
+                    <input id="searchInput" type="text" placeholder="ค้นหา" oninput="searchHome()" />
+
+                    <button class="icon-btn" onclick="toggleSearch()">
+                        <i class="ri-search-line"></i>
+                    </button>
+                </div>
+
+                <div class="notification-wrapper">
+                    <button class="icon-btn" onclick="toggleNotification()">
+                        <i class="ri-notification-3-line"></i>
+                        <span id="notifyCount" class="notify-badge">0</span>
+                    </button>
+                    <div id="notificationDropdown" class="notification-dropdown">
+                        <ul id="notificationList"></ul>
+                    </div>
+                </div>
+                <div id="navAuth"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+
+            <!-- HERO -->
+            <div class="profile-hero">
+                <div class="profile-pic">H</div>
+                <div>
+                    <h2></h2>
+                    <p>สมาชิกทั่วไป · Thailand</p>
+                </div>
+            </div>
+
+            <!-- PERSONAL INFO -->
+            <div class="section">
+                <div class="section-header">
+                    <h3>ข้อมูลส่วนตัว</h3>
+                    <button class="edit-btn" onclick="openModal()">แก้ไข</button>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span>ชื่อ</span>
+                        <strong id="showFirst">Haechan</strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>นามสกุล</span>
+                        <strong id="showLast">Lee</strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>วันเกิด</span>
+                        <strong id="showDob">06-06-2000</strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>อีเมล</span>
+                        <strong id="showEmail">haechannaceah@gmail.com</strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>เบอร์โทร</span>
+                        <strong id="showPhone">08x-xxx-xxxx</strong>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ADDRESS -->
+            <div class="section">
+                <div class="section-header">
+                    <h3>ที่อยู่</h3>
+                    <button class="edit-btn" onclick="openAddressModal()">แก้ไข</button>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span>บ้านเลขที่</span>
+                        <strong id="showHouse"></strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>ซอย</span>
+                        <strong id="showSoi"></strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>ถนน</span>
+                        <strong id="showRoad"></strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>ตำบล</span>
+                        <strong id="showSubdistrict"></strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>อำเภอ</span>
+                        <strong id="showDistrict"></strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>จังหวัด</span>
+                        <strong id="showProvince"></strong>
+                    </div>
+
+                    <div class="info-item">
+                        <span>รหัสไปรษณีย์</span>
+                        <strong id="showPostal"></strong>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        </div>
+    </main>
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Personal Information</h3>
+                <button onclick="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <label>First Name</label>
+                <input id="editFirst" type="text">
+
+                <label>Last Name</label>
+                <input id="editLast" type="text">
+
+                <label>Email</label>
+                <input id="editEmail" type="email">
+
+                <label>Phone</label>
+                <input id="editPhone" type="text">
+
+                <label>Date of Birth</label>
+                <input id="editDob" type="date">
+            </div>
+
+            <div class="modal-footer">
+                <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT ADDRESS MODAL -->
+    <div id="addressModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Address</h3>
+                <button onclick="closeAddressModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <label>บ้านเลขที่</label>
+                <input id="editHouse" type="text">
+
+                <label>ซอย</label>
+                <input id="editSoi" type="text">
+
+                <label>ถนน</label>
+                <input id="editRoad" type="text">
+
+                <label>ตำบล</label>
+                <input id="editSubdistrict" type="text">
+
+                <label>อำเภอ</label>
+                <input id="editDistrict" type="text">
+
+                <label>จังหวัด</label>
+                <input id="editProvince" type="text">
+
+                <label>รหัสไปรษณีย์</label>
+                <input id="editPostal" type="text">
+            </div>
+
+            <div class="modal-footer">
+                <button class="save-btn" onclick="saveAddress()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+
+    <footer>
+        © 2026 Daisenko (Thailand) Co., Ltd. All Rights Reserved.
+    </footer>
+
+    <script>
+        const API_BASE = "http://localhost:3000/api";
+        /* =============   UTIL SAFE JSON ================== */
+        function getJSON(key, fallback = null) {
+            try {
+                return JSON.parse(localStorage.getItem(key)) ?? fallback;
+            } catch {
+                return fallback;
+            }
+        }
+
+        let user = null;
+        /* ================= AUTH GUARD ================= */
+        async function checkAuth() {
+            try {
+                const res = await fetch(`${API_BASE}/auth/me`, {
+                    credentials: "include"
+                });
+
+                if (res.status === 401) {
+                    redirectToLogin();
+                    return;
+                }
+
+                if (!res.ok) {
+                    redirectToLogin();
+                    return;
+                }
+
+                user = await res.json();
+                renderHeader();
+                renderProfile();
+
+            } catch (err) {
+                console.error("Auth error:", err);
+                redirectToLogin();
+            }
+        }
+
+        function redirectToLogin() {
+            window.location.href = "login.html";
+        }
+
+         /* ================= LOGOUT ================= */
+         async function logout() {
+            try {
+                await fetch(`${API_BASE}/auth/logout`, {
+                    method: "POST",
+                    credentials: "include"
+                });
+            } catch (err) {
+                console.log("Logout error:", err);
+            }
+
+            redirectToLogin();
+        }
+
+        /* ================= HEADER ================= */
+        function renderHeader() {
+            const navAuth = document.getElementById("navAuth");
+
+            navAuth.innerHTML = `
+                <div class="profile">
+                    <button class="avatar-btn" onclick="toggleProfile()">
+                        <div class="avatar-letter">
+                            ${user.name?.charAt(0) || "U"}
+                        </div>
+                    </button>
+
+                    <div class="profile-menu" id="profileMenu">
+                        <div class="profile-info">
+                            <strong>${user.name}</strong>
+                            <span>${user.email}</span>
+                        </div>
+                        <a href="home.html">หน้าหลัก</a>
+                        <a href="myprofile.html">บัญชีของฉัน</a>
+                        <a href="servicelist.html">ประเภทการบริการ</a>
+                        <a href="booking.html">จองบริการ</a>
+                        <a href="history.html">ประวัติการจอง</a>
+                        <a href="#" class="logout" onclick="logout()">ออกจากระบบ</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* =============   SEARCH =============== */
+        function toggleSearch() {
+            const input = document.getElementById("searchInput");
+            input.classList.toggle("show");
+
+            if (input.classList.contains("show")) {
+                input.focus();
+            } else {
+                input.value = "";
+                searchHome(); // รีเซ็ตผลลัพธ์
+            }
+        }
+        function searchHome() {
+            const keyword = document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+            const sections = document.querySelectorAll(".section");
+
+            sections.forEach(section => {
+                const text = section.innerText.toLowerCase();
+
+                if (text.includes(keyword)) {
+                    section.style.display = "block";
+                } else {
+                    section.style.display = "none";
+                }
+            });
+
+            if (keyword === "") {
+                sections.forEach(section => {
+                    section.style.display = "block";
+                });
+            }
+        }
+
+        /* =============  NOTIFICATION SYSTEM =============== */
+        const notifySound = new Audio("../sounds/notify.mp3");
+        notifySound.volume = 1;
+
+        let audioUnlocked = false;
+        let previousUnread = 0;
+
+        // ===== UNLOCK AUDIO =====
+        function unlockAudio() {
+            if (audioUnlocked) return;
+
+            notifySound.play()
+                .then(() => {
+                    notifySound.pause();
+                    notifySound.currentTime = 0;
+                    audioUnlocked = true;
+                })
+                .catch(() => { });
+        }
+        document.addEventListener("click", unlockAudio, { once: true });
+
+        // ===== LOAD NOTIFICATIONS =====
+        async function loadNotifications() {
+
+            const badge = document.getElementById("notifyCount");
+            const list = document.getElementById("notificationList");
+
+            try {
+                const res = await fetch(`${API_BASE}/notifications`, {
+                    credentials: "include"
+                });
+
+                if (!res.ok) return;
+
+                const notifications = await res.json();
+                const unread = notifications.filter(n => !n.read);
+
+                badge.textContent = unread.length;
+                badge.style.display = unread.length ? "flex" : "none";
+
+                list.innerHTML = "";
+
+                if (!notifications.length) {
+                    list.innerHTML =
+                        `<li class="empty">ไม่มีการแจ้งเตือน</li>`;
+                    return;
+                }
+
+                notifications.forEach(n => {
+
+                    const li = document.createElement("li");
+                    li.textContent = n.message;
+                    if (!n.read) li.classList.add("unread");
+
+                    li.onclick = async () => {
+
+                        await fetch(
+                            `${API_BASE}/notifications/${n.id}/read`,
+                            {
+                                method: "PATCH",
+                                credentials: "include"
+                            }
+                        );
+
+                        loadNotifications();
+
+                        if (n.type === "booking") {
+                            window.location.href =
+                                `history.html#${n.bookingId}`;
+                        }
+                    };
+
+                    list.appendChild(li);
+                });
+
+            } catch (err) {
+                console.log("Notification error:", err);
+            }
+        }
+
+        // ===== TOGGLE DROPDOWN =====
+        function toggleNotification(forceClose = false) {
+
+            const dropdown =
+                document.getElementById("notificationDropdown");
+
+            if (!dropdown) return;
+
+            if (forceClose) {
+                dropdown.classList.remove("show");
+                return;
+            }
+
+            dropdown.classList.toggle("show");
+        }
+
+        // ===== CLICK OUTSIDE CLOSE =====
+        document.addEventListener("click", e => {
+            const wrapper =
+                document.querySelector(".notification-wrapper");
+
+            const dropdown =
+                document.getElementById("notificationDropdown");
+
+            if (!wrapper?.contains(e.target)) {
+                dropdown?.classList.remove("show");
+            }
+        });
+        loadNotifications();
+
+        /* ================= PROFILE RENDER ================= */
+        function renderProfile() {
+
+            document.querySelector(".profile-pic").innerText =
+                user.name?.charAt(0) || "U";
+
+            document.querySelector(".profile-hero h2").innerText =
+                user.name || "User";
+
+            document.getElementById("showFirst").innerText = user.firstName || "";
+            document.getElementById("showLast").innerText = user.lastName || "";
+            document.getElementById("showEmail").innerText = user.email || "";
+            document.getElementById("showPhone").innerText = user.phone || "";
+            document.getElementById("showDob").innerText = user.dob || "";
+
+            document.getElementById("showHouse").innerText = user.house || "";
+            document.getElementById("showSoi").innerText = user.soi || "";
+            document.getElementById("showRoad").innerText = user.road || "";
+            document.getElementById("showSubdistrict").innerText = user.subdistrict || "";
+            document.getElementById("showDistrict").innerText = user.district || "";
+            document.getElementById("showProvince").innerText = user.province || "";
+            document.getElementById("showPostal").innerText = user.postal || "";
+        }
+
+        /* ===== MENU ===== */
+        function toggleProfile() {
+            const menu = document.getElementById("profileMenu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+
+        function openModal() {
+            editFirst.value = user.name?.split(" ")[0] || "";
+            editLast.value = user.name?.split(" ")[1] || "";
+            editEmail.value = user.email || "";
+            editPhone.value = user.phone || "";
+            editDob.value = user.dob || "";
+
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+
+
+        /* ================= SAVE PROFILE ================= */
+        async function saveProfile() {
+
+            const payload = {
+                firstName: editFirst.value,
+                lastName: editLast.value,
+                email: editEmail.value,
+                phone: editPhone.value,
+                dob: editDob.value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/users/profile`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.status === 401) {
+                    redirectToLogin();
+                    return;
+                }
+
+                if (!res.ok) {
+                    alert("ไม่สามารถบันทึกข้อมูลได้");
+                    return;
+                }
+
+                user = await res.json();
+                renderProfile();
+                renderHeader();
+                closeModal();
+
+            } catch (err) {
+                console.error("Save profile error:", err);
+            }
+        }
+
+        /* ===== SAVE ADDRESS ===== */
+        async function saveAddress() {
+
+            const payload = {
+                house: editHouse.value,
+                soi: editSoi.value,
+                road: editRoad.value,
+                subdistrict: editSubdistrict.value,
+                district: editDistrict.value,
+                province: editProvince.value,
+                postal: editPostal.value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/users/address`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.status === 401) {
+                    redirectToLogin();
+                    return;
+                }
+
+                if (!res.ok) {
+                    alert("ไม่สามารถบันทึกที่อยู่ได้");
+                    return;
+                }
+
+                user = await res.json();
+                renderProfile();
+                closeAddressModal();
+
+            } catch (err) {
+                console.error("Save address error:", err);
+            }
+        }
+
+        setInterval(async () => {
+            if (!user) return;
+            await loadNotifications();
+        }, 30000);
+
+        /* ================= INIT ================= */
+        async function init() {
+            await checkAuth();
+            if (!user) return;
+
+            await renderProfile();
+            await loadNotifications();
+        }
+        init();
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daisenko | บัญชีของฉัน</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/user/style.css">
+  <link rel="stylesheet" href="/css/user/profile.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div id="header"></div>
+
+  <main>
+    <div class="container">
+
+      <!-- HERO -->
+      <div class="profile-hero">
+        <div class="profile-pic">H</div>
+        <div>
+          <h2></h2>
+          <p>สมาชิกทั่วไป · Thailand</p>
+        </div>
+      </div>
+
+      <!-- PERSONAL INFO -->
+      <div class="section">
+        <div class="section-header">
+          <h3>ข้อมูลส่วนตัว</h3>
+          <button class="edit-btn" onclick="openModal()">แก้ไข</button>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <span>ชื่อ</span>
+            <strong id="showFirst">Haechan</strong>
+          </div>
+
+          <div class="info-item">
+            <span>นามสกุล</span>
+            <strong id="showLast">Lee</strong>
+          </div>
+
+          <div class="info-item">
+            <span>วันเกิด</span>
+            <strong id="showDob">06-06-2000</strong>
+          </div>
+
+          <div class="info-item">
+            <span>อีเมล</span>
+            <strong id="showEmail">haechannaceah@gmail.com</strong>
+          </div>
+
+          <div class="info-item">
+            <span>เบอร์โทร</span>
+            <strong id="showPhone">08x-xxx-xxxx</strong>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ADDRESS -->
+      <div class="section">
+        <div class="section-header">
+          <h3>ที่อยู่</h3>
+          <button class="edit-btn" onclick="openAddressModal()">แก้ไข</button>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <span>บ้านเลขที่</span>
+            <strong id="showHouse"></strong>
+          </div>
+
+          <div class="info-item">
+            <span>ซอย</span>
+            <strong id="showSoi"></strong>
+          </div>
+
+          <div class="info-item">
+            <span>ถนน</span>
+            <strong id="showRoad"></strong>
+          </div>
+
+          <div class="info-item">
+            <span>ตำบล</span>
+            <strong id="showSubdistrict"></strong>
+          </div>
+
+          <div class="info-item">
+            <span>อำเภอ</span>
+            <strong id="showDistrict"></strong>
+          </div>
+
+          <div class="info-item">
+            <span>จังหวัด</span>
+            <strong id="showProvince"></strong>
+          </div>
+
+          <div class="info-item">
+            <span>รหัสไปรษณีย์</span>
+            <strong id="showPostal"></strong>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    </div>
+  </main>
+  <!-- EDIT MODAL -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Personal Information</h3>
+        <button onclick="closeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <label>First Name</label>
+        <input id="editFirst" type="text">
+
+        <label>Last Name</label>
+        <input id="editLast" type="text">
+
+        <label>Email</label>
+        <input id="editEmail" type="email">
+
+        <label>Phone</label>
+        <input id="editPhone" type="text">
+
+        <label>Date of Birth</label>
+        <input id="editDob" type="date">
+      </div>
+
+      <div class="modal-footer">
+        <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT ADDRESS MODAL -->
+  <div id="addressModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Address</h3>
+        <button onclick="closeAddressModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <label>บ้านเลขที่</label>
+        <input id="editHouse" type="text">
+
+        <label>ซอย</label>
+        <input id="editSoi" type="text">
+
+        <label>ถนน</label>
+        <input id="editRoad" type="text">
+
+        <label>ตำบล</label>
+        <input id="editSubdistrict" type="text">
+
+        <label>อำเภอ</label>
+        <input id="editDistrict" type="text">
+
+        <label>จังหวัด</label>
+        <input id="editProvince" type="text">
+
+        <label>รหัสไปรษณีย์</label>
+        <input id="editPostal" type="text">
+      </div>
+
+      <div class="modal-footer">
+        <button class="save-btn" onclick="saveAddress()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footer"></div>
+<script src="/js/user/auth.js"></script>
+<script src="/js/user/search.js"></script>
+<script src="/js/user/notification.js"></script>
+  <script>
+    // โหลด header
+    fetch("/components/header.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("header").innerHTML = data;
+        renderHeader();
+        loadNotifications();
+      });
+
+    // โหลด footer
+    fetch("/components/footer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer").innerHTML = data;
+      });
+
+    /* =============   UTIL SAFE JSON ================== */
+    function getJSON(key, fallback = null) {
+      try {
+        return JSON.parse(localStorage.getItem(key)) ?? fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    /* ===== HERO ===== */
+    const user = getJSON("user", {});
+    document.querySelector(".profile-pic").innerText =
+      user.name?.charAt(0) || "U";
+
+    document.querySelector(".profile-hero h2").innerText =
+      user.name || "User";
+
+    /* ===== PERSONAL INFO ===== */
+    showFirst.innerText = user.name?.split(" ")[0] || "";
+    showLast.innerText = user.name?.split(" ")[1] || "";
+    showEmail.innerText = user.email || "";
+    showPhone.innerText = user.phone || "";
+    showDob.innerText = user.dob || "";
+
+    /* ===== ADDRESS ===== */
+    showHouse.innerText = user.house || "";
+    showSoi.innerText = user.soi || "";
+    showRoad.innerText = user.road || "";
+    showSubdistrict.innerText = user.subdistrict || "";
+    showDistrict.innerText = user.district || "";
+    showProvince.innerText = user.province || "";
+    showPostal.innerText = user.postal || "";
+
+
+    /* ===== MENU ===== */
+    function toggleProfile() {
+      const menu = document.getElementById("profileMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("user");
+      window.location.href = "home.html";
+    }
+
+    function openModal() {
+      editFirst.value = user.name?.split(" ")[0] || "";
+      editLast.value = user.name?.split(" ")[1] || "";
+      editEmail.value = user.email || "";
+      editPhone.value = user.phone || "";
+      editDob.value = user.dob || "";
+
+      document.getElementById("editModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("editModal").style.display = "none";
+    }
+
+
+    /* ===== SAVE PERSONAL ===== */
+    function saveProfile() {
+      const newName = editFirst.value + " " + editLast.value;
+
+      user.name = newName;
+      user.email = editEmail.value;
+      user.phone = editPhone.value;
+      user.dob = editDob.value;
+
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // update hero
+      document.querySelector(".profile-pic").innerText = newName.charAt(0);
+      document.querySelector(".profile-hero h2").innerText = newName;
+
+      // update info boxes
+      showFirst.innerText = editFirst.value;
+      showLast.innerText = editLast.value;
+      showEmail.innerText = editEmail.value;
+      showPhone.innerText = editPhone.value;
+      showDob.innerText = editDob.value;
+
+      // update header
+      document.querySelector(".avatar-letter").innerText = newName.charAt(0);
+      document.querySelector(".profile-info strong").innerText = newName;
+      document.querySelector(".profile-info span").innerText = editEmail.value;
+
+      closeModal();
+    }
+
+    function openAddressModal() {
+      editHouse.value = user.house || "";
+      editSoi.value = user.soi || "";
+      editRoad.value = user.road || "";
+      editSubdistrict.value = user.subdistrict || "";
+      editDistrict.value = user.district || "";
+      editProvince.value = user.province || "";
+      editPostal.value = user.postal || "";
+
+      addressModal.style.display = "flex";
+    }
+
+    function closeAddressModal() {
+      document.getElementById("addressModal").style.display = "none";
+    }
+
+    /* ===== SAVE ADDRESS ===== */
+    function saveAddress() {
+      if (editPostal.value && !/^\d{5}$/.test(editPostal.value)) {
+        alert("รหัสไปรษณีย์ต้องเป็นตัวเลข 5 หลัก");
+        return;
+      }
+
+      user.house = editHouse.value;
+      user.soi = editSoi.value;
+      user.road = editRoad.value;
+      user.subdistrict = editSubdistrict.value;
+      user.district = editDistrict.value;
+      user.province = editProvince.value;
+      user.postal = editPostal.value;
+
+      localStorage.setItem("user", JSON.stringify(user));
+
+      showHouse.innerText = user.house;
+      showSoi.innerText = user.soi;
+      showRoad.innerText = user.road;
+      showSubdistrict.innerText = user.subdistrict;
+      showDistrict.innerText = user.district;
+      showProvince.innerText = user.province;
+      showPostal.innerText = user.postal;
+
+      closeAddressModal();
+    }
+  </script>
+
+
+</body>
+
+</html>

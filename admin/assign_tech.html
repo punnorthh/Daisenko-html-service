@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Assign Technician | Daisenko</title>
+
+  <link rel="stylesheet" href="/css/admin/all.css">
+  <link rel="stylesheet" href="/css/admin/assign.css">
+
+  <!-- ICON -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet" />
+
+</head>
+
+<body data-page="assign_tech">
+
+  <div class="layout">
+
+    <!-- SIDEBAR  -->
+    <div id="sidebar-container"></div>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- TOPBAR -->
+      <div id="topbar-container"></div>
+
+      <!-- CONTENT -->
+      <section class="table-box booking-table-box">
+        <h2>มอบหมายช่าง</h2>
+
+        <div class="detail-grid">
+          <div><strong>ชื่อ:</strong> <span id="name"></span></div>
+          <div><strong>เบอร์:</strong> <span id="phone"></span></div>
+          <div><strong>จำนวนแอร์:</strong> <span id="amount"></span></div>
+          <div><strong>วันที่:</strong> <span id="date"></span></div>
+        </div>
+
+        <hr>
+
+        <div class="assign-action">
+          <label><strong>เลือกช่าง</strong></label>
+          <div id="technicianList" class="tech-grid"></div>
+
+          <div style="margin-top:20px">
+            <button id="assignBtn" class="btn primary" disabled>
+              ยืนยันมอบหมายงาน
+            </button>
+          </div>
+        </div>
+
+
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/js/admin/assign.js"></script>
+  <!-- <script src="/js/admin/auth.js"></script> -->
+  <!-- <script src="/js/admin/topbar.js"></script> -->
+  <!-- <script src="/js/admin/sidebar.js"></script> -->
+
+</body>
+
+</html>

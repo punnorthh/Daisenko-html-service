@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>บริการล้างแอร์ | Daisenko</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/user/style.css">
+  <link rel="stylesheet" href="/css/user/servicelist.css">
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <!-- HEADER -->
+  <div id="header"></div>
+
+  <main>
+    <section class="service-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>เลือกบริการของเรา</h2>
+
+          <div class="filters">
+            <button class="filter active" onclick="filterService('all', this)">ทั้งหมด</button>
+            <button class="filter" onclick="filterService('standard', this)">Standard</button>
+            <button class="filter" onclick="filterService('general', this)">General</button>
+            <button class="filter" onclick="filterService('premium', this)">Premium</button>
+          </div>
+        </div>
+
+        <div class="service-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <div id="footer"></div>
+
+  <script src="../js/user/promotion.js"></script>
+  <script src="/js/user/auth.js"></script>
+  <script src="/js/user/search.js"></script>
+  <script src="/js/user/notification.js"></script>
+  <script>
+    // โหลด header
+    fetch("/components/header.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("header").innerHTML = data;
+        renderHeader();
+        loadNotifications();
+      });
+
+    // โหลด footer
+    fetch("/components/footer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer").innerHTML = data;
+      });
+
+    /* =============   UTIL SAFE JSON ================== */
+    function getJSON(key, fallback = null) {
+      try {
+        return JSON.parse(localStorage.getItem(key)) ?? fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    const promoData = JSON.parse(localStorage.getItem("PROMOTIONS") || "[]");
+    const grid = document.querySelector(".service-grid");
+
+    /* ================= PROMO ================= */
+    function renderPromo() {
+      if (typeof PROMOTIONS === "undefined") return;
+
+      PROMOTIONS.forEach(p => {
+
+        let priceHtml = "";
+
+        if (p.oldPrice) {
+          priceHtml = `
+        <div class="price promo">
+          <span class="price-old">${p.oldPrice} บาท</span><br>
+          <span class="price-new">${p.price} บาท</span>
+        </div>`;
+        } else {
+          priceHtml = `<div class="price promo">${p.price} บาท</div>`;
+        }
+
+        grid.insertAdjacentHTML("afterbegin", `
+      <div class="service-item" data-category="${p.category}">
+        <span class="badge promo">PROMO</span>
+        <img src="${p.image}" alt="${p.title}">
+        <div class="service-info">
+          <h3>${p.title}</h3>
+
+          ${priceHtml}
+
+          <a href="booking.html" class="btn-book"
+            onclick='selectService(${JSON.stringify({
+          ...p,
+          isPromo: true,
+          minPrice: p.price,
+          maxPrice: p.price
+        })})'>
+            เลือกบริการ
+          </a>
+        </div>
+      </div>
+    `);
+      });
+    }
+
+    /* ================= ADMIN SERVICE ================= */
+    function renderAdminServices() {
+      const services = JSON.parse(localStorage.getItem("ALL_SERVICES")) || [];
+
+      services.forEach(s => {
+        if (!s.active) return;
+
+        grid.insertAdjacentHTML("beforeend", `
+          <div class="service-item" data-category="${s.category}">
+            <span class="badge type">${s.category}</span>
+            ${s.image
+            ? `<img src="${s.image}">`
+            : `<div style="height:200px;background:#f1f5f9"></div>`
+          }
+            <div class="service-info">
+              <h3>${s.title}</h3>
+              <p class="service-desc">${s.desc || ""}</p>
+              <div class="price">${Number(s.price).toLocaleString()} บาท</div>
+
+              <a href="booking.html" class="btn-book"
+              onclick='selectService(${JSON.stringify({
+            ...s,
+            isPromo: false,
+            minPrice: s.price,
+            maxPrice: s.price
+          })})'>
+                เลือกบริการ
+              </a>
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    /* ================= FILTER ================= */
+    function filterService(type, el) {
+      document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+
+      document.querySelectorAll('.service-item').forEach(card => {
+        card.style.display =
+          type === 'all' || card.dataset.category === type ? '' : 'none';
+      });
+    }
+
+    function selectService(service) {
+      localStorage.setItem("SELECTED_SERVICE", JSON.stringify(service));
+    }
+
+    /* ================= INIT ================= */
+    grid.innerHTML = "";
+    renderPromo();
+    renderAdminServices();
+
+  </script>
+</body>
+
+</html>

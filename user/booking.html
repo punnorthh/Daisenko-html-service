@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>จองล้างแอร์ | Daisenko</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/user/booking.css">
+  <link rel="stylesheet" href="/css/user/style.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div id="header"></div>
+  <div id="navAuth"></div>
+
+  <section class="service">
+    <h2>จองบริการล้างแอร์</h2>
+
+    <form id="bookingForm" class="service-card">
+      <label>ชื่อผู้ติดต่อ</label>
+      <input type="text" id="name" required>
+
+      <label>เบอร์โทร</label>
+      <input type="tel" id="phone" required>
+
+      <label>จำนวนแอร์</label>
+      <select id="amount">
+        <option>1 เครื่อง</option>
+        <option>2 เครื่อง</option>
+        <option>3 เครื่อง</option>
+        <option>4 เครื่องขึ้นไป</option>
+      </select>
+
+      <label>ตำแหน่งหน้างาน</label>
+
+      <button type="button" class="location-btn" onclick="openMap()">
+        📍 เลือกตำแหน่งบนแผนที่
+      </button>
+
+      <input type="text" id="location" readonly onclick="openMapLink()">
+
+      <label>หมายเหตุเพิ่มเติมถึงช่าง</label>
+      <textarea id="note" placeholder="เช่น บ้านเลขที่, หอพัก, ติดต่อก่อนถึง"></textarea>
+
+
+      <label>วันนัดหมาย</label>
+      <input type="date" id="date">
+
+      <label>COUPON</label>
+      <input type="text" id="referral" placeholder="เลือกโค้ดส่วนลด" readonly onclick="openCouponModal()" />
+      <p id="referralStatus" style="font-size:13px;margin-top:-12px"></p>
+      <button class="cta-secondary" type="submit">
+        ยืนยันการจอง
+      </button>
+
+      <p class="promise">🔒 ข้อมูลปลอดภัย • ช่างติดต่อกลับภายใน 15 นาที</p>
+    </form>
+  </section>
+
+  <!-- MODAL -->
+  <div class="modal" id="bookingModal">
+    <div class="modal-content">
+      <h3>สรุปรายการจอง</h3>
+
+      <ul id="summaryList"></ul>
+      <div id="priceSummary" style="margin-top:16px;border-top:1px dashed #e5e7eb;padding-top:12px">
+      </div>
+
+      <div class="status-timeline">
+        <div class="step active" id="step1">
+          <span class="dot"></span>
+          <p>รอการยืนยันคำสั่งจอง</p>
+        </div>
+        <div class="step" id="step2">
+          <span class="dot"></span>
+          <p>แอดมินกำลังประสานช่าง</p>
+        </div>
+        <div class="step" id="step3">
+          <span class="dot"></span>
+          <p>ช่างรับงานแล้ว (ภายใน 15 นาที)</p>
+        </div>
+      </div>
+
+      <p id="bookingStatus" class="status pending">กรุณากดยืนยันการจอง</p>
+
+      <button id="confirmBooking" class="cta-secondary">
+        ยืนยันการจอง
+      </button>
+    </div>
+  </div>
+
+  <div class="modal" id="couponModal" onclick="closeCouponModal(event)">
+    <div class="modal-content coupon-sheet" onclick="event.stopPropagation()">
+
+      <div class="coupon-header">
+        <h3>Coupon book</h3>
+        <input type="text" id="couponInput" placeholder="Enter discount code" />
+      </div>
+
+      <div id="couponList" class="coupon-list"></div>
+
+      <button class="cta-secondary" onclick="applyCoupon()">
+        Confirm
+      </button>
+    </div>
+  </div>
+
+
+  <!-- MAP MODAL -->
+  <div class="modal" id="mapModal">
+    <div class="modal-content" style="max-width:600px;">
+      <h3>เลือกตำแหน่งหน้างาน</h3>
+      <div id="map"></div>
+      <button class="cta-secondary" style="margin-top:16px" onclick="confirmLocation()">
+        ยืนยันตำแหน่งนี้
+      </button>
+      <button class="location-btn" onclick="locateMe()" style="margin-bottom:12px">
+        📡 ใช้ตำแหน่งปัจจุบัน
+      </button>
+      <p id="addressPreview" style="font-size:14px;color:#334155;margin-top:8px">
+        ยังไม่ได้เลือกตำแหน่ง
+      </p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footer"></div>
+  <script src="/js/user/search.js"></script>
+  <script src="/js/user/notification.js"></script>
+  <script>
+    // โหลด header
+    fetch("/components/header.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("header").innerHTML = data;
+        renderHeader();
+        loadNotifications();
+      });
+
+    // โหลด footer
+    fetch("/components/footer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer").innerHTML = data;
+      });
+    /* =============   UTIL SAFE JSON ================== */
+    function getJSON(key, fallback = null) {
+      try {
+        return JSON.parse(localStorage.getItem(key)) ?? fallback;
+      } catch {
+        return fallback;
+      }
+    }
+    /* ================= GLOBAL ================= */
+    let appliedDiscount = null;
+    let isAutoFilling = false;
+
+    const form = document.getElementById("bookingForm");
+    const modal = document.getElementById("bookingModal");
+    const summary = document.getElementById("summaryList");
+    const confirmBtn = document.getElementById("confirmBooking");
+    const statusText = document.getElementById("bookingStatus");
+
+    const nameInput = document.getElementById("name");
+    const phoneInput = document.getElementById("phone");
+    const amountInput = document.getElementById("amount");
+    const dateInput = document.getElementById("date");
+    const locationInput = document.getElementById("location");
+    const noteInput = document.getElementById("note");
+    const referralInput = document.getElementById("referral");
+
+    /* ================= MAP SYSTEM ================= */
+    let map;
+    let marker;
+    let geocoder;
+    let selectedLatLng = null;
+    let selectedAddress = "";
+
+    function initMap() {
+      geocoder = new google.maps.Geocoder();
+    }
+
+    function openMap() {
+      document.getElementById("mapModal").style.display = "flex";
+
+      setTimeout(() => {
+
+        const bangkok = { lat: 13.7563, lng: 100.5018 };
+
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: bangkok,
+          zoom: 16,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false
+        });
+
+        // คลิกเพื่อปักหมุด
+        map.addListener("click", (e) => {
+          placeMarker(e.latLng);
+        });
+
+        // auto GPS
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(pos => {
+            const position = {
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude
+            };
+            map.setCenter(position);
+            placeMarker(position);
+          });
+        }
+
+      }, 200);
+    }
+
+    function placeMarker(position) {
+
+      selectedLatLng = position;
+
+      if (marker) {
+        marker.setMap(null);
+      }
+
+      marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        draggable: true
+      });
+
+      reverseGeocode(position);
+
+      // ลากหมุดแล้วอัปเดตที่อยู่
+      marker.addListener("dragend", () => {
+        const pos = marker.getPosition();
+        selectedLatLng = pos;
+        reverseGeocode(pos);
+      });
+    }
+
+    function reverseGeocode(latlng) {
+
+      geocoder.geocode({ location: latlng }, (results, status) => {
+
+        if (status === "OK" && results[0]) {
+          selectedAddress = results[0].formatted_address;
+          document.getElementById("addressPreview").textContent = selectedAddress;
+        } else {
+          document.getElementById("addressPreview").textContent = "ไม่พบที่อยู่";
+        }
+
+      });
+    }
+
+    function locateMe() {
+
+      if (!navigator.geolocation) {
+        alert("เบราว์เซอร์ไม่รองรับ GPS");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(pos => {
+        const position = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        };
+        map.setCenter(position);
+        placeMarker(position);
+      });
+    }
+    function openMapLink() {
+      const link = locationInput.dataset.maplink;
+
+
+      if (!selectedLatLng) {
+        alert("กรุณาเลือกตำแหน่ง");
+        return;
+      }
+
+      window.open(link, "_blank");
+    }
+
+    function confirmLocation() {
+
+
+      const lat = selectedLatLng.lat().toFixed(6);
+      const lng = selectedLatLng.lng().toFixed(6);
+
+      const link = `https://www.google.com/maps?q=${lat},${lng}`;
+
+      locationInput.value = selectedAddress || `${lat},${lng}`;
+      locationInput.dataset.maplink = link;
+
+      document.getElementById("mapModal").style.display = "none";
+    }
+
+    /* ================= DISCOUNT ================= */
+    const coupons = [
+      {
+        code: "DAISENKO10",
+        title: "10% off",
+        desc: "Valid for all services",
+        note: "[LM69] Selected stores only",
+        type: "percent",
+        usable: true
+      },
+      {
+        code: "WELCOME50",
+        title: "฿50 off",
+        desc: "For new users only",
+        type: "cash",
+        usable: false,
+        reason: "New customers only"
+      },
+      {
+        code: "FRIEND100",
+        title: "฿100 off",
+        desc: "When booking 3 units or more",
+        type: "cash",
+        usable: true
+      }
+    ];
+
+    let selectedCoupon = null;
+
+    function renderCoupons() {
+      const list = document.getElementById("couponList");
+      list.innerHTML = "";
+
+      coupons.forEach(c => {
+        const disabled = !c.usable;
+
+        list.innerHTML += `
+        <div class="coupon-item ${disabled ? "disabled" : ""} ${selectedCoupon?.code === c.code ? "selected" : ""}"
+              ${disabled ? "" : `onclick="selectCoupon('${c.code}')"`}>
+
+            <!-- LEFT ICON -->
+            <div class="coupon-left">
+              <div class="coupon-icon ${c.type}">
+                ${c.type === "percent" ? "%" : "฿"}
+              </div>
+            </div>
+
+            <!-- BODY -->
+            <div class="coupon-body">
+              <div class="coupon-title">${c.title}</div>
+              <div class="coupon-sub">${c.desc}</div>
+
+              <div class="coupon-divider"></div>
+
+              <div class="coupon-foot">
+                <span class="coupon-note">${c.note || "Selected stores only"}</span>
+              </div>
+
+              ${disabled ? `<div class="coupon-error">${c.reason}</div>` : ""}
+            </div>
+
+            <!-- RIGHT RADIO -->
+            <input type="radio"
+              class="coupon-radio"
+              ${selectedCoupon?.code === c.code ? "checked" : ""}
+              ${disabled ? "disabled" : ""}
+            />
+          </div>
+        `;
+      });
+    }
+
+    function selectCoupon(code) {
+      selectedCoupon = coupons.find(c => c.code === code);
+      renderCoupons();
+    }
+    function openCouponModal() {
+      document.getElementById("couponModal").style.display = "flex";
+      renderCoupons();
+    }
+
+    function closeCouponModal(e) {
+      if (e.target.id === "couponModal") {
+        document.getElementById("couponModal").style.display = "none";
+      }
+    }
+
+    function applyCoupon() {
+      const inputCode = couponInput.value.trim().toUpperCase();
+
+      if (inputCode) {
+        const found = coupons.find(c => c.code === inputCode);
+        if (!found) return alert("Coupon not found");
+        if (!found.usable) return alert(found.reason);
+        selectedCoupon = found;
+      }
+
+      if (!selectedCoupon) {
+        document.getElementById("couponModal").style.display = "none";
+        return;
+      }
+
+      referralInput.value = selectedCoupon.code;
+      referralStatus.textContent = "✅ Coupon applied";
+      referralStatus.style.color = "green";
+
+      document.getElementById("couponModal").style.display = "none";
+    }
+
+    const service = JSON.parse(
+      localStorage.getItem("SELECTED_SERVICE") || "null"
+    );
+    if (!service || !service.title) {
+      alert("กรุณาเลือกบริการก่อนทำการจอง");
+      window.location.href = "servicelist.html";
+    }
+
+    function getUnitCount() {
+      const val = amountInput.value;
+      if (val.includes("1")) return 1;
+      if (val.includes("2")) return 2;
+      if (val.includes("3")) return 3;
+      return 4;
+    }
+
+    function getBasePrice() {
+      if (!service || !service.minPrice) return 0;
+
+      if (service.pricingType === "flat") {
+        return service.minPrice;
+      }
+
+      return getUnitCount() * service.minPrice;
+    }
+
+
+    function getDiscount(base) {
+      if (!selectedCoupon) return 0;
+
+      if (selectedCoupon.type === "percent") {
+        return Math.round(base * 0.10); // 10%
+      }
+
+      if (selectedCoupon.type === "cash") {
+        return selectedCoupon.code === "FRIEND100" ? 100 : 0;
+      }
+
+      return 0;
+    }
+
+    function getTotalPrice() {
+      const unit = getUnitCount();
+
+      // ใช้ราคาต่ำสุดเป็น base (UX ดีสุด)
+      return unit * (service.minPrice || 0);
+    }
+    const base = (service.minPrice + service.maxPrice) / 2;
+
+    function renderPriceSummary() {
+      const base = getBasePrice();
+      const discount = getDiscount(base);
+      const total = base - discount;
+
+      document.getElementById("priceSummary").innerHTML = `
+        <div style="font-size:14px">
+
+          <div style="display:flex;justify-content:space-between">
+            <span>ค่าบริการ (${amountInput.value})</span>
+            <span>฿${base.toLocaleString()}</span>
+          </div>
+
+          ${discount > 0 ? `
+          <div style="display:flex;justify-content:space-between;color:#dc2626">
+            <span>ส่วนลด ${selectedCoupon ? `(${selectedCoupon.code})` : ""}</span>
+            <span>-฿${discount.toLocaleString()}</span>
+          </div>` : ""}
+
+          <hr style="border:none;border-top:1px dashed #e5e7eb;margin:10px 0">
+
+          <div style="display:flex;justify-content:space-between;
+                      font-weight:700;font-size:16px;color:#16a34a">
+            <span>ยอดชำระทั้งหมด</span>
+            <span>฿${total.toLocaleString()}</span>
+          </div>
+
+        </div>
+      `;
+    }
+
+    /* ================= BOOKING ================= */
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+
+      if (!service || !service.title) {
+        alert("กรุณาเลือกบริการก่อน");
+        return;
+      }
+
+      summary.innerHTML = `
+      <li style="display:flex;gap:14px;align-items:center;margin-bottom:12px">
+        <img src="${service.image}"
+          style="width:60px;height:60px;border-radius:10px;object-fit:cover">
+        <div>
+          <strong>
+            ${service.title}
+            ${service.isPromo ? '<span style="color:#dc2626;font-size:13px"> (PROMO)</span>' : ''}
+          </strong><br>
+          <span style="font-size:13px;color:#64748b">
+            ${service.pricingType === "flat"
+          ? `ราคาเหมาจ่าย`
+          : `฿${service.minPrice.toLocaleString()} / เครื่อง`
+        }
+            • ${amountInput.value}
+          </span>
+        </div>
+      </li>
+        <li>ชื่อ: ${nameInput.value}</li>
+        <li>โทร: ${phoneInput.value}</li>
+        <li>จำนวน: ${amountInput.value}</li>
+        <li>ตำแหน่ง: ${locationInput.value || "-"}</li>
+        <li>วันที่: ${dateInput.value || "-"}</li>
+        <li>หมายเหตุ: ${noteInput.value || "-"}</li>
+      `;
+      renderPriceSummary();
+      modal.style.display = "flex";
+    });
+
+
+
+    /* ================= DRAFT / REBOOK ================= */
+    const DRAFT_KEY = "bookingDraft";
+    const REBOOK_KEY = "rebookData";
+
+    function saveDraft() {
+      if (isAutoFilling) return; // กัน auto save ตอน restore
+
+      const draft = {
+        name: nameInput.value,
+        phone: phoneInput.value,
+        amount: amountInput.value,
+        date: dateInput.value,
+        location: locationInput.value,
+        note: noteInput.value,
+        referral: referralInput.value
+      };
+
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    }
+
+    ["input", "change"].forEach(evt => {
+      [nameInput, phoneInput, amountInput, dateInput,
+        locationInput, noteInput, referralInput]
+        .forEach(el => el.addEventListener(evt, saveDraft));
+    });
+
+    const rebookData = JSON.parse(localStorage.getItem("rebookData"));
+    const draftData = JSON.parse(localStorage.getItem(DRAFT_KEY));
+
+    if (rebookData) {
+      fillForm(rebookData);
+      localStorage.removeItem("rebookData");
+    }
+
+    function fillForm(data) {
+      isAutoFilling = true;
+
+      nameInput.value = data.name || "";
+      phoneInput.value = data.phone || "";
+      amountInput.value = data.amount || data.service || "";
+      dateInput.value = data.date || "";
+      locationInput.value = data.location || "";
+      noteInput.value = data.note || "";
+      referralInput.value = data.referral || "";
+
+      setTimeout(() => isAutoFilling = false, 0);
+    }
+    const basePrice = getBasePrice();
+    const discount = getDiscount(basePrice);
+
+    localStorage.setItem("PAYMENT_DATA", JSON.stringify({
+      base: basePrice,
+      discount,
+      total: basePrice - discount,
+      coupon: selectedCoupon?.code || null
+    }));
+
+  </script>
+  <script src="/js/user/auth.js"></script>
+  <script type="module" src="/js/user/booking.js"></script>
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqRDXBWRbUvzFH0M7vp-bRD0WxHX70w1Y&libraries=marker&callback=initMap">
+    </script>
+
+</body>
+
+</html>

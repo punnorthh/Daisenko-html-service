@@ -1,0 +1,29 @@
+<header>
+  <div class="container nav">
+    <div class="logo">
+      <a href="home.html">
+        <img src="/images/logo.png" alt="Daisenko Logo">
+      </a>
+    </div>
+    <div class="nav-right">
+      <div class="search-wrapper">
+        <input id="searchInput" type="text" placeholder="ค้นหา" oninput="searchHome()" />
+
+        <button class="icon-btn" onclick="toggleSearch()">
+          <i class="ri-search-line"></i>
+        </button>
+      </div>
+
+      <div class="notification-wrapper">
+        <button class="icon-btn" onclick="toggleNotification()">
+          <i class="ri-notification-3-line"></i>
+          <span id="notifyCount" class="notify-badge">0</span>
+        </button>
+        <div id="notificationDropdown" class="notification-dropdown">
+          <ul id="notificationList"></ul>
+        </div>
+      </div>
+      <div id="navAuth"></div>
+    </div>
+  </div>
+</header>

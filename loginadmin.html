@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login | Daisenko</title>
+
+    <style>
+        :root {
+            --brand-blue-start: #2563eb;
+            --brand-blue-end: #1e40af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f8fafc;
+            color: #1F2365;
+        }
+
+        /* ====== MAIN LAYOUT ====== */
+        .login-layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        /* ====== LEFT BRAND (DESKTOP) ====== */
+        .login-brand {
+            display: none;
+        }
+
+        /* ====== RIGHT SIDE ====== */
+        .login-form-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* CARD */
+        .login-form {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            padding: 40px 32px;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* MOBILE LOGO */
+        .mobile-logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .mobile-logo img {
+            height: 42px;
+        }
+
+        .login-form h2 {
+            font-size: 28px;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            font-size: 15px;
+            background: #f9fafb;
+            transition: .2s;
+        }
+
+        input:focus {
+            outline: none;
+            background: #fff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .forgot {
+            text-align: right;
+            font-size: 14px;
+            margin-top: 8px;
+            color: #2563eb;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            width: 100%;
+            margin-top: 28px;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand-blue-start), var(--brand-blue-end));
+            transition: .25s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        /* ====== DESKTOP ====== */
+        @media(min-width:900px) {
+
+            .login-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .login-brand {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 0 120px;
+                background: linear-gradient(135deg, var(--brand-blue-start), var(--brand-blue-end));
+                color: #fff;
+                position: relative;
+            }
+
+            .brand-top img {
+                max-width: 200px;
+                margin-bottom: 50px;
+            }
+
+            .brand-top h1 {
+                font-size: 42px;
+                font-weight: 600;
+                line-height: 1.25;
+                margin-bottom: 15px;
+            }
+
+            .brand-top p {
+                font-size: 17px;
+                line-height: 1.8;
+                opacity: .9;
+                max-width: 480px;
+            }
+
+            .brand-footer {
+                position: absolute;
+                bottom: 40px;
+                left: 120px;
+                font-size: 14px;
+                opacity: .85;
+            }
+
+            /* FORM SIDE */
+            .login-form-area {
+                background: #ffffff;
+            }
+
+            .mobile-logo {
+                display: none;
+            }
+
+            .login-form {
+                box-shadow: none;
+                padding: 0;
+                background: none;
+            }
+
+            .login-form h2 {
+                text-align: left;
+                font-size: 34px;
+            }
+
+            .subtitle {
+                text-align: left;
+                font-size: 16px;
+                margin-bottom: 36px;
+            }
+        }
+
+        /* ===== FORGOT MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: .25s;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-box {
+            background: #fff;
+            width: 90%;
+            max-width: 380px;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: fadeUp .25s ease;
+        }
+
+        .modal-box h3 {
+            margin-bottom: 8px;
+        }
+
+        .modal-box p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .modal-box input {
+            margin-bottom: 20px;
+        }
+
+        .modal-box button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            font-size: medium;
+            font-weight: 600;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand-blue-start), var(--brand-blue-end));
+        }
+
+        .close-modal {
+            display: block;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        @keyframes fadeUp {
+            from {
+                transform: translateY(15px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-layout">
+
+        <!-- LEFT -->
+        <div class="login-brand">
+            <div class="brand-top">
+                <img src="/images/logo.png" alt="Daisenko">
+                <h1>Daisenko<br>Service Platform</h1>
+                <p>
+                    ระบบจัดการคำสั่งงานและบริการหลังการขาย<br>
+                    สำหรับทีมงาน Daisenko โดยเฉพาะ
+                </p>
+            </div>
+
+            <div class="brand-footer">
+                © 2026 Daisenko. All rights reserved.
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="login-form-area">
+            <div class="login-form">
+
+                <div class="mobile-logo">
+                    <img src="/images/logo.png" alt="Daisenko">
+                </div>
+
+                <h2>เข้าสู่ระบบ</h2>
+                <p class="subtitle">สำหรับผู้ดูแลระบบ</p>
+
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="adminUsername" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="adminPassword" required>
+                        <div class="forgot" onclick="openForgotModal()">ลืมรหัสผ่าน?</div>
+                    </div>
+
+                    <button class="btn-login" type="submit">เข้าสู่ระบบ</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- FORGOT PASSWORD MODAL -->
+    <div class="modal-overlay" id="forgotModal">
+        <div class="modal-box">
+            <h3>รีเซ็ตรหัสผ่าน</h3>
+            <p>กรอก Email ของคุณ</p>
+
+            <input type="text" id="resetInput" placeholder="Email">
+
+            <button onclick="sendReset()">ส่งคำขอรีเซ็ต</button>
+            <span class="close-modal" onclick="closeForgotModal()">ยกเลิก</span>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("adminLoginForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById("adminUsername").value.trim();
+            const password = document.getElementById("adminPassword").value;
+
+            try {
+
+                const response = await fetch("/api/admin/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+
+                    // บันทึก session
+                    localStorage.setItem("adminLoggedIn", "true");
+                    localStorage.setItem("adminData", JSON.stringify(data.admin));
+
+                    // ไป dashboard
+                    window.location.href = "dashboard.html";
+
+                } else {
+
+                    alert(data.message || "เข้าสู่ระบบไม่สำเร็จ");
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+                alert("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้");
+
+            }
+
+        });
+    </script>
+
+</body>
+
+</html>

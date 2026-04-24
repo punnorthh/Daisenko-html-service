@@ -1,0 +1,172 @@
+    :root {
+      --accent: #2563eb;
+      --bg: #f4f6fb;
+      --card: #ffffff;
+    }
+
+    /* ===== SERVICE ===== */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .service-item {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .08);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .service-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      padding: 6px 14px;
+      font-size: 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* PROMO */
+    .badge.promo {
+      background: #dc2626;
+    }
+
+    /* STANDARD / PREMIUM */
+    .badge.type {
+      background: #2563eb;
+    }
+
+    .service-info {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0b4ed3;
+      margin-bottom: 18px;
+    }
+
+    /* ราคาโปรโมชั่น ใช้แดง */
+    .price.promo {
+      color: #dc2626;
+    }
+
+    .service-desc {
+      color: #858585;
+      font-size: 15px;
+      margin-top: 2px;
+      margin-bottom: 2px;
+    }
+
+    .price-old {
+      color: #b4bbc7;
+      font-size: 17px;
+      text-decoration: line-through;
+    }
+
+    .price-new {
+      color: #dc2626;
+      font-weight: 700;
+    }
+
+    .btn-book {
+      margin-top: auto;
+      padding: 14px;
+      text-align: center;
+      background: #0b5cff;
+      color: #fff;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    /* TABLET */
+    /* @media (max-width: 1024px) {
+      main {
+        padding: 40px 0;
+      }
+
+      .service-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+      }
+
+      .service-item img {
+        height: 180px;
+      }
+    } */
+
+    /* MOBILE */
+    /* @media (max-width: 768px) {
+      .container {
+        padding: 0 18px;
+      }
+
+      .nav {
+        height: 64px;
+      }
+
+      .logo img {
+        height: 34px;
+      }
+
+      .nav-right {
+        gap: 10px;
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .service-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .service-item img {
+        height: 200px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+    } */
+
+    /* SMALL PHONE */
+    /* @media (max-width: 420px) {
+      .service-info {
+        padding: 18px;
+      }
+
+      .price {
+        font-size: 18px;
+      }
+
+      .btn-book {
+        padding: 12px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .notification-dropdown {
+        width: 280px;
+      }
+    } */

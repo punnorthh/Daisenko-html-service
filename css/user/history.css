@@ -1,0 +1,332 @@
+:root {
+    --primary: #0b1f44;
+    --accent: #2563eb;
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --radius: 18px;
+    --shadow: 0 20px 50px rgba(15, 23, 42, .06);
+}
+
+/* ===== TABLE ===== */
+.table-wrapper {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+thead {
+    background: #e7e9ec;
+}
+
+th,
+td {
+    padding: 16px 18px;
+    font-size: 14px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: center;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+td:first-child {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+th,
+td {
+    padding: 18px 22px;
+    font-size: 14px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: center;
+    line-height: 1.6;
+    vertical-align: top;
+}
+
+td:nth-child(2) {
+    min-width: 180px;
+}
+
+td:nth-child(3) {
+    min-width: 160px;
+}
+
+td:nth-child(4) {
+    white-space: nowrap;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+td:nth-child(7) {
+    min-width: 240px;
+}
+
+/* ===== STATUS ===== */
+.status {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.completed {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.pending {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.cancelled {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.action a {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: var(--accent);
+}
+
+.action a:hover {
+    background: #f1f5f9;
+}
+
+.assigned {
+    background: #e8f7ef;
+    color: #2e7d32;
+}
+
+/* ===== MODAL ===== */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-card {
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+}
+
+.modal-card h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+
+.modal-card p {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-outline {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.btn-primary {
+    padding: 10px 22px;
+    font-size: small;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+/* ===== MOBILE MODE ======= */
+@media (max-width: 768px) {
+    /* .container {
+        padding: 0 18px;
+    }
+
+    .nav {
+        height: 64px;
+    }
+
+    .logo img {
+        height: 34px;
+    }
+
+    .nav-right {
+        gap: 10px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .filters {
+        width: auto;
+        justify-content: flex-start;
+        overflow-x: auto;
+        gap: 6px;
+    } */
+
+    /* ===== TABLE → CARD ===== */
+
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+        width: 100%;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tbody tr {
+        background: #fff;
+        margin-bottom: 16px;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .05);
+    }
+
+    tbody td {
+        border: none;
+        text-align: left;
+        padding: 6px 0;
+        font-size: 14px;
+    }
+
+    tbody td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        font-size: 12px;
+        color: #475569;
+        margin-bottom: 4px;
+    }
+
+    .status {
+        margin-top: 4px;
+    }
+
+    .notification-dropdown {
+        width: 280px;
+        right: -20px;
+    }
+}
+
+/* ======== MOBILE CARD VERSION ============ */
+.mobile-booking-list {
+    display: none;
+}
+
+.booking-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+    transition: transform .2s ease;
+}
+
+.booking-card:hover {
+    transform: translateY(-2px);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.card-id {
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 15px;
+}
+
+.card-service {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.card-info {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.card-bottom {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-note {
+    font-size: 13px;
+    max-width: 65%;
+}
+
+.card-action a {
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: var(--accent);
+}
+
+/* ===== MOBILE SWITCH ===== */
+/* @media (max-width: 768px) {
+
+    .table-wrapper {
+        display: none;
+    }
+
+    .mobile-booking-list {
+        display: block;
+    }
+
+} */

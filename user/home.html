@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daisenko | บริการล้างแอร์</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/user/home.css">
+  <link rel="stylesheet" href="/css/user/style.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div id="header"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <h1>ค้นหาช่างล้างแอร์มืออาชีพ</h1>
+      <p>จองง่าย • ช่างติดต่อกลับภายใน 15 นาที • บริการทั่วประเทศ</p>
+      <div class="hero-actions">
+        <a href="booking.html" class="btn-primary">จองล้างแอร์ทันที</a>
+        <a href="#packages" class="btn-outline">ดูโปรโมชั่น</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <div class="trust">
+    <div class="container trust-grid">
+      <div>✔ ช่างมืออาชีพ</div>
+      <div>✔ รับประกันงาน</div>
+      <div>✔ ไม่มีค่าใช้จ่ายล่วงหน้า</div>
+      <div>✔ บริการทั่วประเทศ</div>
+    </div>
+  </div>
+
+  <!-- PROMOTIONS -->
+  <section id="packages">
+    <div class="container">
+      <h2>โปรโมชั่นพิเศษ</h2>
+
+      <div class="promo-grid" id="promoGrid"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>ต้องการช่างล้างแอร์ที่ไว้ใจได้?</h2>
+    <p>จองง่าย ช่างติดต่อกลับเร็ว รับประกันคุณภาพ</p>
+    <a href="booking.html" class="btn-primary">จองบริการตอนนี้</a>
+  </section>
+
+
+  <div id="thankOverlay" class="thank-overlay" style="display:none;">
+    <div class="thank-card" onclick="event.stopPropagation()">
+      <div class="thank-icon">✔</div>
+
+      <h2>ขอบคุณที่ใช้บริการของเรา</h2>
+      <p class="sub">ระบบได้รับข้อมูลการจองเรียบร้อยแล้ว</p>
+
+      <div class="booking-box">
+        <span class="label">Booking ID</span>
+        <div class="booking-id" id="lb-id"></div>
+      </div>
+
+      <p class="note">
+        🔧 กรุณารอช่างติดต่อกลับภายใน <strong>15 นาที</strong><br>
+        หากมีข้อสงสัยสามารถติดต่อแอดมินได้ทันที
+      </p>
+
+      <button class="btn-admin" onclick="contactAdmin()">ติดต่อแอดมิน</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footer"></div>
+
+  <script src="/assets/data/promotions.js"></script>
+  <script src="/js/user/auth.js"></script>
+  <script src="/js/user/search.js"></script>
+  <script src="/js/user/notification.js"></script>
+  <script>
+    // โหลด header
+    fetch("/components/header.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("header").innerHTML = data;
+        renderHeader(); 
+        loadNotifications(); 
+      });
+
+    // โหลด footer
+    fetch("/components/footer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer").innerHTML = data;
+      });
+      
+    /* =============   UTIL SAFE JSON ================== */
+    function getJSON(key, fallback = null) {
+      try {
+        return JSON.parse(localStorage.getItem(key)) ?? fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function addNotification(message, type = "general", bookingId = null) {
+      const notifications = getJSON("user_notifications", []);
+
+      notifications.unshift({
+        id: Date.now(),
+        message,
+        type,
+        bookingId,
+        read: false,
+        createdAt: new Date().toISOString()
+      });
+
+      localStorage.setItem("user_notifications", JSON.stringify(notifications));
+
+      loadNotifications(true); 
+    }
+
+    /* ===========   PROMOTION ============= */
+    const PROMOTIONS = [
+      {
+        id: "NEWUSER550",
+        title: "ลูกค้าใหม่",
+        desc: "สำหรับลูกค้าใหม่ • จำกัด 1 เครื่อง • พร้อมอุปกรณ์มาตรฐาน",
+        badge: "NEW USER",
+        badgeColor: "blue",
+        pricePerUnit: 550,
+        oldPrice: 700,
+        minQty: 1,
+        maxQty: 1,
+        type: "per_unit"
+      },
+      {
+        id: "FAMILY590",
+        title: "แพ็กครอบครัว",
+        desc: "ขั้นต่ำ 3 เครื่อง • ประหยัดสูงสุด • แถมฆ่าเชื้อ",
+        badge: "BEST DEAL",
+        badgeColor: "red",
+        pricePerUnit: 590,
+        oldPrice: 700,
+        minQty: 3,
+        maxQty: null,
+        type: "per_unit"
+      },
+      {
+        id: "ENTERPRISE",
+        title: "ออฟฟิศ / คอนโด",
+        desc: "มากกว่า 10 เครื่อง • ทำสัญญารายปี • ใบเสนอราคา",
+        badge: "ENTERPRISE",
+        badgeColor: "dark",
+        minPrice: 5000,
+        maxPrice: 20000,
+        type: "flat"
+      }
+    ];
+
+    localStorage.setItem("PROMOTIONS", JSON.stringify(PROMOTIONS));
+
+    function renderPromotions() {
+      const grid = document.getElementById("promoGrid");
+      if (!grid) return;
+
+      grid.innerHTML = PROMOTIONS.map(p => `
+        <div class="promo-card">
+          <span class="badge ${p.badgeColor}">${p.badge}</span>
+          <h3>${p.title}</h3>
+    
+          ${p.type === "per_unit"
+          ? `
+            <p class="price-old">${p.oldPrice} บาท</p>
+            <p class="price-new">${p.pricePerUnit} บาท</p>
+            `
+          : `
+            <p class="price-old">เริ่มต้น</p>
+            <p class="price-new">ราคาเหมาจ่าย</p>
+            `
+        }
+    
+          <ul>
+            ${p.desc.split("•").map(d => `<li>✔ ${d.trim()}</li>`).join("")}
+          </ul>
+    
+          <a href="booking.html"
+             class="btn-primary"
+             onclick="selectPromo('${p.id}')">
+             ${p.type === "flat" ? "ขอใบเสนอราคา" : "จองเลย"}
+          </a>
+        </div>
+      `).join("");
+    }
+    renderPromotions();
+
+    function selectPromo(id) {
+      const promo = PROMOTIONS.find(p => p.id === id);
+      if (!promo) return;
+
+      const payload =
+        promo.type === "flat"
+          ? { ...promo, isPromo: true, pricingType: "flat" }
+          : {
+            ...promo,
+            isPromo: true,
+            pricingType: "per_unit",
+            minPrice: promo.pricePerUnit,
+            maxPrice: promo.pricePerUnit
+          };
+
+      localStorage.setItem("SELECTED_SERVICE", JSON.stringify(payload));
+    }
+
+    /* ========== THANK YOU OVERLAY ============= */
+    (function initThankOverlay() {
+      const last = getJSON("lastBooking");
+      if (!last) return;
+
+      const overlay =
+        document.getElementById("thankOverlay");
+      const idLabel =
+        document.getElementById("lb-id");
+
+      if (!overlay || !idLabel) return;
+
+      overlay.style.display = "flex";
+      idLabel.textContent = last.id;
+
+      overlay.addEventListener("click", () => {
+        overlay.style.display = "none";
+        localStorage.removeItem("lastBooking");
+      });
+    })();
+
+  </script>
+
+
+</body>
+
+</html>

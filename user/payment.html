@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ชำระเงิน | Daisenko</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent: #2563eb;
+      --bg: #f4f6fb;
+      --text-main: #0f172a;
+    }
+
+    /* ====== RESET ====== */
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 24px;
+    }
+
+    /* ===== NAV ===== */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav {
+      height: 72px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 42px;
+    }
+
+    /* ===== AVATAR ===== */
+    .profile {
+      position: relative;
+    }
+
+    .avatar-btn {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .avatar-letter {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 1px #e5e7eb;
+    }
+
+    .avatar-btn:hover .avatar-letter {
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .avatar-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+    }
+
+    /* ===== PROFILE MENU ===== */
+    .profile-menu {
+      position: absolute;
+      right: 0;
+      top: 54px;
+      background: #ffffff;
+      width: 220px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      display: none;
+      overflow: hidden;
+    }
+
+    .profile-info {
+      padding: 14px 16px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .profile-info strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .profile-info span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .profile-menu a {
+      display: block;
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+
+    .profile-menu a:hover {
+      background: #f1f5f9;
+    }
+
+    .logout {
+      color: #dc2626;
+    }
+
+    /* ===== MAIN ===== */
+    main {
+      flex: 1;
+      padding: 56px 0;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    /* ===== FILTER ===== */
+    .filters {
+      background: #ffffff;
+      padding: 6px;
+      border-radius: 999px;
+      display: inline-flex;
+      gap: 6px;
+      box-shadow: inset 0 0 0 1px #e5e7eb;
+    }
+
+    .filter {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .filter.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    /* ================= SERVICE ================= */
+    .service {
+      padding: 0px 0px 40px;
+      text-align: center;
+    }
+
+    .service-card {
+      background: white;
+      max-width: 450px;
+      margin: auto;
+      padding: 50px 32px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .cta-secondary {
+      background-color: #00c2ff;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 10px;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .status {
+      margin-top: 16px;
+      font-weight: bold;
+    }
+
+    .status.pending {
+      color: #ff9800;
+    }
+
+    .status.success {
+      color: #4caf50;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .process-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .process-line {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .logo img {
+        height: 40px;
+      }
+    }
+
+    /* FOOTER */
+    footer {
+      background: #004aad;
+      color: #ffffff;
+      text-align: center;
+      padding: 26px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== NAV ===== -->
+  <header>
+    <div class="container nav">
+      <div class="logo">
+        <a href="home.html">
+          <img src="/images/logo.png" alt="Daisenko Logo">
+        </a>
+      </div>
+
+      <div class="profile">
+        <div id="navAuth"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAYMENT -->
+  <main>
+    <section class="service">
+      <div class="service-card">
+        <h2>ชำระเงินผ่าน QR Payment</h2>
+        <p>สแกน QR เพื่อชำระเงิน</p>
+
+        <img id="qrImage" style="width:220px; margin:20px auto; display:block;">
+        <p id="qrAmount" style="font-weight:600"></p>
+
+        <button id="confirmPayment" class="cta-secondary">
+          ยืนยันการชำระเงิน
+        </button>
+
+        <p id="paymentStatus" class="status pending">
+          กรุณากดยืนยันการชำระเงิน
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Daisenko (Thailand) Co., Ltd. All Rights Reserved.
+  </footer>
+
+  <!-- JS -->
+  <script>
+    const navAuth = document.getElementById("navAuth");
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (isLoggedIn) {
+      navAuth.innerHTML = `
+    <div class="profile">
+      <button class="avatar-btn" onclick="toggleProfile()">
+        <div class="avatar-letter">
+          ${user.name?.charAt(0) || "U"}
+        </div>
+      </button>
+
+      <div class="profile-menu" id="profileMenu">
+        <div class="profile-info">
+          <strong>${user.name || "-"}</strong>
+          <span>${user.email || "-"}</span>
+        </div>
+        <a href="home.html">หน้าหลัก</a>
+        <a href="myprofile.html">บัญชีของฉัน</a>
+        <a href="servicelist.html">ประเภทการบริการ</a>
+        <a href="booking.html">จองบริการ</a>
+        <a href="history.html">ประวัติการจอง</a>
+        <a href="#" class="logout" onclick="logout()">ออกจากระบบ</a>
+      </div>
+    </div>
+  `;
+    } else {
+      navAuth.innerHTML = `
+    <a href="login.html" class="nav-cta">สมัครสมาชิก / เข้าสู่ระบบ</a>
+  `;
+    }
+
+    function toggleProfile() {
+      const menu = document.getElementById("profileMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      window.location.href = "home.html";
+    }
+
+    /* ================= PROMPTPAY QR ================= */
+
+    // 👉 ใส่เบอร์ PromptPay ร้าน (เบอร์โทร หรือ เลขบัตร ปชช.)
+    const PROMPTPAY_ID = "0812345678"; // ← เปลี่ยนเป็นของคุณจริง
+
+    function generatePromptPayQR(promptpayId, amount) {
+      function crc16(payload) {
+        let crc = 0xFFFF;
+        for (let i = 0; i < payload.length; i++) {
+          crc ^= payload.charCodeAt(i) << 8;
+          for (let j = 0; j < 8; j++) {
+            crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+          }
+        }
+        return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, "0");
+      }
+
+      const amountStr = amount.toFixed(2);
+
+      const payload =
+        "000201010212" +
+        "29370016A000000677010111" +
+        (promptpayId.length === 10
+          ? "01130066" + promptpayId
+          : "0213" + promptpayId) +
+        "5802TH" +
+        "540" + amountStr.length + amountStr +
+        "6304";
+
+      const crc = crc16(payload);
+      return payload + crc;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const confirmBtn = document.getElementById("confirmPayment");
+      const statusText = document.getElementById("paymentStatus");
+      const payment = JSON.parse(localStorage.getItem("PAYMENT_DATA") || "{}");
+
+      if (!payment.total) {
+        alert("ไม่พบข้อมูลการชำระเงิน");
+        window.location.href = "booking.html";
+        return;
+      }
+
+      const payload = generatePromptPayQR(PROMPTPAY_ID, payment.total);
+
+      const qrUrl =
+        "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+        encodeURIComponent(payload);
+
+      document.getElementById("qrImage").src = qrUrl;
+      document.getElementById("qrAmount").textContent =
+        `ยอดชำระ ฿${payment.total.toLocaleString()}`;
+
+      confirmBtn.addEventListener("click", function () {
+        statusText.textContent = "กำลังตรวจสอบการชำระเงิน...";
+        statusText.className = "status pending";
+
+        setTimeout(() => {
+          statusText.innerHTML =
+            "ชำระเงินสำเร็จ ✅<br>ช่างจะติดต่อกลับภายใน 15 นาที";
+          statusText.className = "status success";
+
+          // mock booking id
+          const booking = {
+            id: "DSK-" + Date.now()
+          };
+
+          // ส่งข้อมูลไปหน้า home
+          localStorage.setItem("lastBooking", JSON.stringify(booking));
+
+          setTimeout(() => {
+            window.location.href = "home.html";
+          }, 1500);
+        }, 2000);
+      });
+    });
+    localStorage.removeItem("lastBooking");
+  </script>
+
+</body>
+
+</html>

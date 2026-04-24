@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Requests | Admin</title> <!-- ICON -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #1F2365;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --status-pending-bg: #fff4e5;
+            --status-pending-text: #ff9800;
+            --status-assigned-bg: #e8f7ef;
+            --status-assigned-text: #2e7d32;
+            --status-rejected-bg: #fdecea;
+            --status-rejected-text: #d32f2f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR LOGO ===== */
+        .sidebar-logo {
+            margin: 10px 10px;
+            padding: 0 0 14px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sidebar-logo img {
+            width: 160px;
+            display: block;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid var(--border);
+            padding: 12px 18px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .sidebar.closed {
+            transform: translateX(-100%);
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            flex: 1;
+            margin-left: 240px;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+            min-width: 0;
+        }
+
+        .main.full {
+            margin-left: 0;
+        }
+
+        /* ===== Mobile ===== */
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0 !important;
+            }
+        }
+
+        /* overlay */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            color: #111;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #b9bcc28d;
+        }
+
+        /* ===== TOP NAV BAR ===== */
+        .top-nav {
+            padding: 18px 28px 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-left-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .top-divider {
+            height: 2px;
+            background: #d6d6d6;
+        }
+
+        .top-nav-left {
+            flex: 0 0 auto;
+        }
+
+        .top-nav-menu {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .top-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-logo {
+            height: 36px;
+        }
+
+        .top-nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 1000px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #111;
+            text-decoration: none;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .top-nav-menu a.active,
+        .top-nav-menu a:hover {
+            background: #b9bcc28d;
+            /* border-radius: 12px; */
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .topbar {
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .content {
+            padding: 18px 28px 28px;
+        }
+
+        /* ===== TOPBAR ICON STYLE ===== */
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: #111;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: #f9fafb;
+        }
+
+        /* ===== USER BUTTON ===== */
+        .user-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 10px 6px 6px;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #111;
+        }
+
+        .user-btn:hover {
+            background: #f9fafb;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        /* ===== USER DROPDOWN ===== */
+        .user-wrapper {
+            position: relative;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 52px;
+            right: 0;
+            width: 160px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .15);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .user-dropdown button {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #ef4444;
+        }
+
+        .user-dropdown button:hover {
+            background: #f9fafb;
+        }
+
+        /* ===== NOTIFICATION ===== */
+        .notification-wrapper {
+            position: relative;
+        }
+
+        .notification-icon {
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .notify-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 2px;
+            border-radius: 900px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #fff;
+            animation: pop 0.25s ease;
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            width: 320px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .15);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .notification-dropdown::before {
+            content: "Notifications";
+            display: block;
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .notification-dropdown ul {
+            list-style: none;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .notify-item {
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background .2s;
+        }
+
+        .notify-item:hover {
+            background: #f9fafb;
+        }
+
+        .notify-item.unread {
+            background: #eef2ff;
+        }
+
+        .notify-text {
+            font-size: 14px;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .notify-time {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .notification-dropdown li {
+            padding: 14px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .notification-dropdown li.empty {
+            padding: 24px;
+            text-align: center;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .notification-dropdown li.unread {
+            font-weight: 600;
+            background: #eef2ff;
+        }
+
+        .notification-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+        }
+
+        /* ===== SEARCH ===== */
+        .search-wrapper {
+            position: relative;
+        }
+
+        #searchInput {
+            position: absolute;
+            right: 52px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            opacity: 0;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1.5px solid var(--border);
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        #searchInput.show {
+            width: 180px;
+            opacity: 1;
+        }
+
+        mark {
+            background: #fff59d;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+            font-size: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .no-results i {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.6;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== TABLE ===== */
+        .booking-table-box {
+            background: var(--card);
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(31, 35, 101, .08);
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .status-filters {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* default (All) */
+        .filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* Pending */
+        .filter-btn[data-status="pending"].active {
+            background: var(--status-pending-bg);
+            color: var(--status-pending-text);
+            border-color: var(--status-pending-text);
+        }
+
+        /* Assigned */
+        .filter-btn[data-status="assigned"].active {
+            background: var(--status-assigned-bg);
+            color: var(--status-assigned-text);
+            border-color: var(--status-assigned-text);
+        }
+
+        /* Rejected */
+        .filter-btn[data-status="rejected"].active {
+            background: var(--status-rejected-bg);
+            color: var(--status-rejected-text);
+            border-color: var(--status-rejected-text);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            padding: 12px 8px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        thead {
+            background: #f5f7fb;
+        }
+
+        tbody tr:hover {
+            background: #fafafa;
+        }
+
+        tr:target {
+            background: #eef2ff;
+        }
+
+        .status-badge {
+            padding: 6px 10px;
+            border: 1px solid currentColor;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.pending {
+            background: var(--status-pending-bg);
+            color: var(--status-pending-text);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .status-badge.assigned {
+            background: var(--status-assigned-bg);
+            color: var(--status-assigned-text);
+        }
+
+        .status-badge.rejected {
+            background: var(--status-rejected-bg);
+            color: var(--status-rejected-text);
+        }
+
+        .btn-accept {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* ===== PENDING COUNTDOWN ===== */
+        .pending-time {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.85;
+            white-space: nowrap;
+        }
+
+        /* ===== ACTION ICONS ===== */
+        .action-icons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .action-icons i {
+            font-size: 18px;
+            cursor: pointer;
+            color: #374151;
+        }
+
+        .action-icons i:hover {
+            color: var(--primary);
+        }
+
+        .action-icons .reject {
+            color: #ef4444;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #fff;
+            padding: 28px;
+            width: 480px;
+            /* 👈 ขยายกรอบ */
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, .15);
+        }
+
+        .modal-box h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .modal-box textarea {
+            width: 100%;
+            height: 120px;
+            margin: 12px 0 20px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: .2s;
+        }
+
+        .modal-box textarea:focus {
+            border-color: var(--primary);
+        }
+
+        /* ===== MODAL BUTTONS ===== */
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .modal-actions button {
+            min-width: 110px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: .2s;
+        }
+
+        /* Cancel */
+        .modal-actions button:first-child {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .modal-actions button:first-child:hover {
+            background: #e5e7eb;
+        }
+
+        /* Reject */
+        .btn-reject {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+
+        /* ===== TECH LIST ===== */
+        #techList {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .tech-option {
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            background: #f9fafb;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all .2s ease;
+        }
+
+        .tech-option:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: nowrap;
+            gap: 10px;
+        }
+
+        .pagination-info {
+            white-space: nowrap;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .page-btn {
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all .2s ease;
+        }
+
+        .page-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .page-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .outside-pagination {
+            margin-top: 24px;
+            padding: 0 4px;
+        }
+
+        /* ======= MOBILE RESPONSIVE ======== */
+
+        html,
+        body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ===== Tablet ===== */
+        @media (max-width:1024px) {
+            .top-nav {
+                padding: 14px 18px 6px;
+            }
+
+            .icon-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+
+            .user-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+
+            .content {
+                padding: 18px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .booking-table-box {
+                padding: 20px;
+            }
+
+        }
+
+        /* ===== Mobile ===== */
+        @media (max-width:768px) {
+            .top-nav {
+                padding: 12px 14px 6px;
+            }
+
+            .top-row {
+                gap: 10px;
+            }
+
+            .icon-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 17px;
+            }
+
+            .user-btn {
+                padding: 4px 6px;
+            }
+
+            .user-avatar {
+                width: 25px;
+                height: 25px;
+                font-size: 15px;
+            }
+
+            .top-nav-right {
+                gap: 8px;
+            }
+
+            /* sidebar */
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                width: 260px;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            /* top nav */
+            .top-nav {
+                padding: 14px 16px 6px;
+            }
+
+            .top-row {
+                gap: 12px;
+            }
+
+            .top-left-group {
+                gap: 12px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .top-nav-right {
+                gap: 10px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .user-btn {
+                padding: 6px;
+            }
+
+            /* content */
+            .content {
+                padding: 16px;
+            }
+
+            /* filter */
+            .filter-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .status-filters {
+                flex-wrap: wrap;
+                width: 100%;
+            }
+
+            .filter-btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            /* table scroll */
+            .booking-table-box {
+                overflow-x: auto;
+                padding: 16px;
+            }
+
+            table {
+                min-width: 900px;
+            }
+
+            th,
+            td {
+                font-size: 13px;
+                text-align: left;
+                white-space: normal;
+            }
+
+            /* action icons */
+            .action-icons {
+                justify-content: flex-start;
+            }
+
+            /* pagination */
+            .pagination-wrapper {
+                gap: 8px;
+            }
+
+            .pagination-info {
+                font-size: 13px;
+            }
+
+            .page-btn {
+                min-width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+
+            /* modal */
+            .modal-box {
+                width: 95%;
+                max-width: 400px;
+                padding: 20px;
+                border-radius: 16px;
+            }
+        }
+
+        /* ===== Small Mobile ===== */
+        @media (max-width:480px) {
+            .top-nav {
+                padding: 10px 10px 6px;
+            }
+
+            .icon-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+
+            .user-avatar {
+                width: 26px;
+                height: 26px;
+                font-size: 14px;
+            }
+
+            .top-nav-right {
+                gap: 6px;
+            }
+
+            .top-left-group {
+                gap: 8px;
+            }
+
+            .page-title {
+                font-size: 18px;
+            }
+
+            #searchInput.show {
+                width: 120px;
+            }
+
+        }
+
+        /* ===== Very Small Mobile ===== */
+        @media (max-width:420px) {
+
+            .icon-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            #searchInput.show {
+                width: 90px;
+            }
+
+        }
+
+        /* ======== MOBILE CARD VERSION ============ */
+        .mobile-card-container {
+            display: none;
+        }
+
+        @media (max-width:768px) {
+            table {
+                display: none;
+            }
+
+            .mobile-card-container {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                margin-top: 10px;
+            }
+        }
+
+        .booking-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 15px 40px rgba(31, 35, 101, .08);
+            border: 1px solid #f1f3f9;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            animation: fadeInUp .35s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1f2365;
+        }
+
+        /* .card-phone */
+        .card-section {
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .card-label {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            margin-bottom: 2px;
+        }
+
+        .card-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #111;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .card-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .card-btn.assign {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .card-btn.reject {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .card-btn:hover {
+            transform: translateY(-1px);
+            opacity: .9;
+        }
+
+        .card-section {
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #f1f3f9;
+        }
+
+        .card-section:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body data-page="request">
+
+    <div class="layout">
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar">
+            <!-- LOGO -->
+            <div class="sidebar-logo">
+                <img src="/images/logo.png" alt="Daisenko Logo">
+            </div>
+            <div class="sidebar-divider"></div>
+
+            <a href="dashboard.html" data-link="dashboard">
+                <i class="ri-dashboard-line"></i> Dashboard
+            </a>
+
+            <a href="request.html" data-link="request" class="active">
+                <i class="ri-user-line"></i> Request
+            </a>
+
+            <a href="technicians.html" data-link="technicians">
+                <i class="ri-group-line"></i> Technicians
+            </a>
+
+            <a href="service_edit.html" data-link="service_edit">
+                <i class="ri-file-list-line"></i> Service Edit
+            </a>
+
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+            <!-- ===== TOP NAV ===== -->
+            <nav class="top-nav">
+                <!-- TOP ROW -->
+                <div class="top-row">
+                    <div class="top-left-group">
+                        <button class="icon-btn" onclick="toggleSidebar()">
+                            <i class="ri-menu-line"></i>
+                        </button>
+
+                        <!-- <h1 class="page-title">Request</h1> -->
+                    </div>
+                    <div class="top-nav-right">
+                        <div class="search-wrapper">
+                            <input type="text" id="searchInput" placeholder="ค้นหา" />
+                            <button class="icon-btn" onclick="toggleSearch()">
+                                <i class="ri-search-line"></i>
+                            </button>
+                        </div>
+
+                        <div class="notification-wrapper">
+                            <button class="icon-btn" onclick="toggleNotification()">
+                                <i class="ri-notification-3-line"></i>
+                                <span id="notifyCount" class="notify-badge">0</span>
+                            </button>
+                            <div id="notificationDropdown" class="notification-dropdown">
+                                <ul id="notificationList"></ul>
+                            </div>
+                        </div>
+
+                        <div class="user-wrapper">
+                            <button class="user-btn" onclick="toggleUserMenu()">
+                                <span class="user-avatar" id="profileAvatar"></span>
+
+                                <span class="user-name" id="profileName"></span>
+                                <i class="ri-arrow-down-s-line"></i>
+                            </button>
+
+                            <div id="userDropdown" class="user-dropdown">
+                                <button onclick="logout()">
+                                    <i class="ri-logout-box-r-line"></i>
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- DIVIDER -->
+                <div class="top-divider"></div>
+            </nav>
+
+            <div class="content">
+                <section class="booking-table-box">
+                    <div class="filter-header">
+                        <h3>รายการคำขอ</h3>
+                        <div class="status-filters"> <button class="filter-btn active" data-status="all">All</button>
+                            <button class="filter-btn" data-status="pending">Pending</button> <button class="filter-btn"
+                                data-status="assigned">Assigned</button> <button class="filter-btn"
+                                data-status="rejected">Rejected</button>
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table>
+                            <!-- MOBILE CARD CONTAINER -->
+                            <div id="mobileCardContainer" class="mobile-card-container"></div>
+                            <thead>
+                                <tr>
+                                    <th>ชื่อ</th>
+                                    <th>เบอร์</th>
+                                    <th>ที่อยู่</th>
+                                    <th>บริการ</th>
+                                    <th>จำนวน</th>
+                                    <th>วัน / เวลา</th>
+                                    <th>ช่าง</th>
+                                    <th>สถานะ</th>
+                                    <th>หมายเหตุ</th>
+                                    <th>จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingTable"></tbody>
+                        </table>
+                    </div>
+                    <div id="noResults" class="no-results"> <i class="ri-search-line"></i>
+                        <p>No results found</p>
+                    </div>
+                </section>
+                <!-- ===== PAGINATION OUTSIDE CARD ===== -->
+                <div class="pagination-wrapper outside-pagination">
+                    <div class="pagination-info" id="paginationInfo"></div>
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- MODAL -->
+    <div id="rejectModal" class="modal">
+        <div class="modal-box">
+            <h3>เหตุผลที่ปฏิเสธ</h3> <textarea id="rejectReason"></textarea>
+            <div class="modal-actions"> <button onclick="closeModal()">ยกเลิก</button> <button class="btn-reject"
+                    onclick="confirmReject()">Reject</button> </div>
+        </div>
+    </div>
+    <div id="assignModal" class="modal">
+        <div class="modal-box">
+            <h3>เลือกช่าง</h3>
+            <div id="techList"></div>
+            <div class="modal-actions"> <button onclick="closeAssignModal()">ยกเลิก</button> </div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= CONFIG ================= */
+        const API_BASE_URL = "http://localhost:3000/api";
+
+        function getToken() {
+            return localStorage.getItem("token");
+        }
+
+        /* ================= FETCH ================= */
+        async function apiFetch(endpoint, options = {}) {
+            try {
+                const res = await fetch(API_BASE_URL + endpoint, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + getToken(),
+                        ...options.headers
+                    },
+                    ...options
+                });
+
+                if (res.status === 401) {
+                    window.location.href = "login.html";
+                    return null;
+                }
+
+                if (!res.ok) throw new Error("API ERROR");
+
+                return await res.json();
+
+            } catch (err) {
+                console.error(err);
+                return null;
+            }
+        }
+        /* ================= API ================= */
+        const API = {
+            BOOKINGS: "/bookings",
+            ASSIGN: (id) => `/bookings/${id}/assign`,
+            REJECT: (id) => `/bookings/${id}/reject`,
+            TECHNICIANS: "/technicians",
+            NOTIFICATIONS: "/notifications",
+            READ_NOTIFICATION: (id) => `/notifications/${id}/read`,
+            PROFILE: "/admin/profile",
+            LOGOUT: "/admin/logout"
+        };
+
+        /* ================= GLOBAL ================= */
+        let data = [];
+        let currentRejectRow = null;
+        let currentAssignIndex = null;
+        let currentPage = 1;
+        const rowsPerPage = 10;
+        let currentKeyword = "";
+
+        /* ================= SIDEBAR ================= */
+        function toggleSidebar() {
+            const sidebar = document.querySelector(".sidebar");
+            const main = document.querySelector(".main");
+            const overlay = document.querySelector(".sidebar-overlay");
+
+            const isMobile = window.innerWidth <= 900;
+
+            if (isMobile) {
+                sidebar.classList.toggle("open");
+
+                if (sidebar.classList.contains("open")) {
+                    const ov = document.createElement("div");
+                    ov.className = "sidebar-overlay";
+                    ov.onclick = toggleSidebar;
+                    document.body.appendChild(ov);
+                } else {
+                    if (overlay) overlay.remove();
+                }
+
+            } else {
+                sidebar.classList.toggle("closed");
+                main.classList.toggle("full");
+            }
+        }
+
+        /* ================= AUTH ================= */
+        async function checkAuth() {
+            const admin = await apiFetch("/admin/me");
+
+            if (!admin) {
+                localStorage.removeItem("token");
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById("profileName").textContent = admin.username;
+            document.getElementById("profileAvatar").textContent =
+                admin.username.charAt(0).toUpperCase();
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+        }
+
+        function guardPage() {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                window.location.href = "login.html";
+            }
+        }
+
+        /* ================= USER MENU ================= */
+        function toggleUserMenu() {
+            const dropdown = document.getElementById("userDropdown");
+            const overlay = document.querySelector(".user-overlay");
+
+            if (overlay) {
+                dropdown.style.display = "none";
+                overlay.remove();
+                return;
+            }
+
+            dropdown.style.display = "block";
+
+            const ov = document.createElement("div");
+            ov.className = "user-overlay";
+            ov.style.position = "fixed";
+            ov.style.inset = "0";
+            ov.style.zIndex = "999";
+            ov.onclick = toggleUserMenu;
+            document.body.appendChild(ov);
+        }
+
+        /* ================= BOOKINGS ================= */
+        async function loadBookings() {
+            const res = await apiFetch(API.BOOKINGS);
+            if (!res) return;
+
+            data = res;
+            render(getActiveStatus());
+        }
+
+        /* ================= RENDER ================= */
+        function render(status = "all") {
+            const tbody = document.getElementById("bookingTable");
+            const cardContainer = document.getElementById("mobileCardContainer");
+            const noResults = document.getElementById("noResults");
+
+            tbody.innerHTML = "";
+            cardContainer.innerHTML = "";
+
+            const keyword = currentKeyword.toLowerCase();
+
+            let filteredData = data
+                .map((item, index) => ({ ...item, originalIndex: index }))
+                .filter(d => {
+                    const statusMatch =
+                        status === "all" ||
+                        (status === "rejected" &&
+                            d.status === "cancelled" &&
+                            d.cancelType === "rejected") ||
+                        d.status === status;
+
+                    const searchMatch =
+                        !keyword ||
+                        (d.name || "").toLowerCase().includes(keyword) ||
+                        (d.phone || "").toLowerCase().includes(keyword) ||
+                        (d.location || "").toLowerCase().includes(keyword) ||
+                        (d.tech || "").toLowerCase().includes(keyword);
+
+                    return statusMatch && searchMatch;
+                });
+
+            noResults.style.display = filteredData.length === 0 ? "block" : "none";
+
+            const totalRows = filteredData.length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+            if (currentPage > totalPages) currentPage = 1;
+
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+
+            const paginatedData = filteredData.slice(start, end);
+
+            paginatedData.forEach(d => {
+                const timeText = d.bookedTime
+                    ? new Date(d.bookedTime).toLocaleTimeString("th-TH")
+                    : "-";
+
+                const pendingHTML = d.status === "pending"
+                    ? `<div class="pending-time" data-time="${d.bookedTime}">
+                        ${getPendingCountdown(d.bookedTime)}
+                       </div>`
+                    : "";
+
+                /* ===== TABLE ===== */
+                tbody.innerHTML += `
+                <tr id="booking-${d.id}">
+                    <td>${d.name}</td>
+                    <td>${d.phone}</td>
+                    <td>${d.location || "-"}</td>
+                    <td>${d.serviceType || "-"}</td>
+                    <td>${d.service || "-"}</td>
+                    <td>${d.date || "-"}<br><small>${timeText}</small></td>
+                    <td>${d.tech || "-"}</td>
+                    <td>
+                        <span class="status-badge ${d.status}">
+                            ${d.status}
+                            ${pendingHTML}
+                        </span>
+                    </td>
+                    <td>${d.adminNote || "-"}</td>
+                    <td>
+                        ${d.status === "pending" ? `
+                        <div class="action-icons">
+                            <i onclick="assignBooking(${d.originalIndex})">Assign</i>
+                            <i onclick="openReject(${d.originalIndex})">Reject</i>
+                        </div>` : "-"}
+                    </td>
+                </tr>
+                `;
+
+                /* ===== MOBILE ===== */
+                cardContainer.innerHTML += `
+                <div class="booking-card">
+                    <div>${d.name}</div>
+                    <div>${d.phone}</div>
+                    <div>${d.location || "-"}</div>
+                </div>`;
+            });
+
+            renderPagination(totalRows, totalPages, start, end, status);
+        }
+
+        /* ================= PAGINATION ================= */
+        function renderPagination(totalRows, totalPages, start, end, status) {
+            const pagination = document.getElementById("pagination");
+            const info = document.getElementById("paginationInfo");
+
+            pagination.innerHTML = "";
+
+            if (totalRows === 0) {
+                info.innerHTML = "";
+                return;
+            }
+
+            info.innerHTML = `Showing ${start + 1}-${Math.min(end, totalRows)} of ${totalRows}`;
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.innerText = i;
+                btn.onclick = () => {
+                    currentPage = i;
+                    render(status);
+                };
+                pagination.appendChild(btn);
+            }
+        }
+
+        /* ================= REJECT ================= */
+        async function confirmReject() {
+            const booking = data[currentRejectRow];
+            const reason = document.getElementById("rejectReason").value;
+
+            await apiFetch(API.REJECT(booking.id), {
+                method: "PUT",
+                body: JSON.stringify({ reason })
+            });
+
+            closeModal();
+            loadBookings();
+        }
+
+        /* ================= ASSIGN ================= */
+        async function assignBooking(index) {
+            currentAssignIndex = index;
+
+            const technicians = await apiFetch(API.TECHNICIANS);
+            if (!technicians) return;
+
+            const techListDiv = document.getElementById("techList");
+            techListDiv.innerHTML = "";
+
+            technicians.forEach(tech => {
+                const div = document.createElement("div");
+                div.innerText = tech.name;
+                div.onclick = () => confirmAssign(tech.name);
+                techListDiv.appendChild(div);
+            });
+
+            document.getElementById("assignModal").classList.add("show");
+        }
+
+        async function confirmAssign(techName) {
+            const booking = data[currentAssignIndex];
+
+            await apiFetch(API.ASSIGN(booking.id), {
+                method: "PUT",
+                body: JSON.stringify({ tech: techName })
+            });
+
+            closeAssignModal();
+            loadBookings();
+        }
+
+        /* ================= NOTIFICATION ================= */
+        async function loadNotifications() {
+            const notifications = await apiFetch(API.NOTIFICATIONS);
+            if (!notifications) return;
+
+            const unread = notifications.filter(n => !n.read);
+
+            document.getElementById("notifyCount").textContent = unread.length;
+
+            const list = document.getElementById("notificationList");
+            list.innerHTML = "";
+
+            notifications.forEach(n => {
+                const li = document.createElement("li");
+                li.textContent = n.message;
+
+                li.onclick = async () => {
+                    await apiFetch(API.READ_NOTIFICATION(n.id), {
+                        method: "PUT"
+                    });
+                    loadNotifications();
+                };
+
+                list.appendChild(li);
+            });
+        }
+
+        /* ================= SEARCH ================= */
+        function toggleSearch() {
+            const input = document.getElementById("searchInput");
+            input.classList.toggle("show");
+            input.focus();
+        }
+
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") {
+                currentKeyword = "";
+                render(getActiveStatus());
+            }
+
+            if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+                e.preventDefault();
+                toggleSearch();
+            }
+        });
+
+        document.getElementById("searchInput").addEventListener("input", e => {
+            currentKeyword = e.target.value;
+            render(getActiveStatus());
+        });
+
+        /* ================= FILTER ================= */
+        function getActiveStatus() {
+            return document.querySelector(".filter-btn.active")?.dataset.status || "all";
+        }
+
+        document.querySelectorAll(".filter-btn").forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                render(btn.dataset.status);
+            };
+        });
+
+        /* ================= COUNTDOWN ================= */
+        function getPendingCountdown(time) {
+            if (!time) return "-";
+
+            const LIMIT = 15 * 60 * 1000;
+            const diff = LIMIT - (Date.now() - new Date(time).getTime());
+
+            if (diff <= 0) return "หมดเวลา";
+
+            const m = Math.floor(diff / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+
+            return `${m}:${s.toString().padStart(2, "0")}`;
+        }
+
+        setInterval(() => {
+            document.querySelectorAll(".pending-time").forEach(el => {
+                el.innerText = getPendingCountdown(el.dataset.time);
+            });
+        }, 1000);
+
+        /* ================= INIT ================= */
+        document.addEventListener("DOMContentLoaded", () => {
+            guardPage();
+            checkAuth();
+            loadBookings();
+            loadNotifications();
+        });
+    </script>
+
+</body>
+
+</html>
