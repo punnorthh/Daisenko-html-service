@@ -25,10 +25,10 @@
                 <h1>ประวัติการจองของฉัน</h1>
 
                 <div class="filters">
-                    <button class="filter active" onclick="filterBooking('all', this)">All</button>
-                    <button class="filter" onclick="filterBooking('pending', this)">Pending</button>
-                    <button class="filter" onclick="filterBooking('assigned', this)">Completed</button>
-                    <button class="filter" onclick="filterBooking('rejected', this)">Rejected</button>
+                    <button class="filter active" onclick="filterBooking('all', this)">ทั้งหมด</button>
+                    <button class="filter" onclick="filterBooking('pending', this)">รอดำเนินการ</button>
+                    <button class="filter" onclick="filterBooking('assigned', this)">สำเร็จ</button>
+                    <button class="filter" onclick="filterBooking('rejected', this)">ยกเลิก</button>
                 </div>
             </div>
 
@@ -446,6 +446,8 @@
                 card.className = "booking-card";
                 card.dataset.status = b.status;
                 card.dataset.cancelType = b.cancelType || "";
+                card.dataset.name = b.name || "";
+                card.dataset.phone = b.phone || "";
 
                 let statusText = "";
                 if (b.status === "pending") statusText = "รอดำเนินการ";
