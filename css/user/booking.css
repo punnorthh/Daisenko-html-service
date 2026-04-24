@@ -1,414 +1,431 @@
-    :root {
-      --accent: #2563eb;
-      --bg: #f4f6fb;
-      --card: #ffffff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --shadow: 0 20px 40px rgba(0, 0, 0, .08);
-    }
+/* ================= ROOT ================= */
+:root {
+  --accent: #2563eb;
+  --accent-dark: #1e40af;
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #6b7280;
+  --radius: 16px;
+  --shadow: 0 20px 40px rgba(0, 0, 0, .08);
+}
 
-    /* MODAL */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .4);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 999;
-    }
+/* ================= BASE ================= */
+body {
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, sans-serif;
+}
 
-    /* MAP */
-    #map {
-      width: 100%;
-      height: 320px;
-      border-radius: 14px;
-      margin-top: 16px;
-    }
+/* ================= SECTION ================= */
+.service {
+  padding: 32px 16px 80px;
+}
 
-    /* SUMMARY */
-    #summaryList {
-      text-align: left;
-      margin: 20px 0;
-    }
+.service h2 {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    #summaryList li {
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
+.service label {
+  display: block;
+  margin-top: 14px;
+}
 
-    /* PROMISE TEXT */
-    .promise {
-      text-align: center;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 16px;
-    }
+.service input {
+  margin-top: 6px;
+  margin-bottom: 16px;
+}
 
-    /* MAIN FORM AREA */
-    .service {
-      padding: 50px 20px 100px;
-    }
+/* ================= CARD ================= */
+.service-card {
+  background: var(--card);
+  max-width: 100%;
+  margin: auto;
+  padding: 20px 16px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid #e5e7eb;
+}
 
-    .service h2 {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 30px;
-      letter-spacing: -0.5px;
-      text-align: center;
-    }
+/* ================= FORM ================= */
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
 
-    .service-card {
-      background: var(--card);
-      max-width: 520px;
-      margin: auto;
-      padding: 48px 44px;
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      border: 1px solid #e5e7eb;
-    }
+.service input,
+.service textarea,
+.service select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 20px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 14px;
+  transition: .2s;
+}
 
-    /* FORM */
-    label {
-      font-weight: 600;
-      font-size: 13px;
-      color: var(--text-muted);
-      display: block;
-    }
+.service input:focus,
+.service textarea:focus,
+.service select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+}
 
-    input,
-    textarea,
-    select {
-      width: 100%;
-      padding: 14px;
-      margin: 8px 0 22px;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      font-size: 14px;
-      background: #f9fafb;
-      transition: .2s;
-    }
+/* ================= BUTTON ================= */
+.cta-secondary {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
+}
 
-    input:focus,
-    textarea:focus,
-    select:focus {
-      outline: none;
-      border-color: var(--accent);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
-    }
+.cta-secondary:hover {
+  background: var(--accent-dark);
+}
 
-    /* LOCATION */
-    .location-btn {
-      width: 100%;
-      background: #eef2ff;
-      border: 1px dashed var(--accent);
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      cursor: pointer;
-      margin: 8px 0 12px;
-      color: var(--accent);
-      font-weight: 600;
-    }
+/* ================= LOCATION ================= */
+.location-btn {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0 12px;
+  border-radius: 12px;
+  border: 1px dashed var(--accent);
+  background: #eef2ff;
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+}
 
-    /* CTA */
-    .cta-secondary {
-      width: 100%;
-      background: #2563eb;
-      border: none;
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 16px;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+/* ================= MAP ================= */
+#map {
+  width: 100%;
+  height: 260px;
+  border-radius: 14px;
+  margin-top: 16px;
+}
 
-    /* MODAL */
-    .modal-content {
-      background: white;
-      width: 90%;
-      max-width: 480px;
-      max-height: calc(100vh - 120px);
-      overflow-y: auto;
-      padding: 36px;
-      border-radius: 22px;
-      text-align: center;
-      box-shadow: var(--shadow);
-      animation: pop .25s ease;
-    }
+/* หัวข้อ modal */
+#mapModal h3 {
+  text-align: center;
+}
 
-    @keyframes pop {
-      from {
-        transform: scale(.95);
-        opacity: 0
-      }
+/* ข้อความด้านล่าง */
+#addressPreview {
+  text-align: center;
+  color: #a6aeba;
+  margin-top: 12px;
+}
 
-      to {
-        transform: scale(1);
-        opacity: 1
-      }
-    }
+/* ================= MODAL ================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, .4);
+  z-index: 999;
+}
 
-    /* STATUS */
-    .step {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-      opacity: .35;
-    }
+.modal-content {
+  width: 100%;
+  max-width: 360px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  animation: pop .25s ease;
+}
 
-    .step.active {
-      opacity: 1;
-    }
+/* animation */
+@keyframes pop {
+  from {
+    transform: scale(.95);
+    opacity: 0;
+  }
 
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #cbd5f5;
-    }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
-    .step.active .dot {
-      background: var(--accent);
-    }
+/* ================= STATUS ================= */
+.step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  opacity: .4;
+}
 
-    .status.pending {
-      color: #f59e0b;
-      font-weight: 600;
-    }
+.step.active {
+  opacity: 1;
+}
 
-    .status.success {
-      color: #22c55e;
-      font-weight: 600;
-    }
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cbd5f5;
+}
 
-    /* ===== COUPON SHEET ===== */
-    .coupon-sheet {
-      max-width: 520px;
-      width: 100%;
-      text-align: left;
-    }
+.step.active .dot {
+  background: var(--accent);
+}
 
-    .coupon-header input {
-      margin-top: 10px;
-    }
+.status.pending {
+  color: #f59e0b;
+  font-weight: 600;
+}
 
-    .coupon-list {
-      margin: 16px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+.status.success {
+  color: #22c55e;
+  font-weight: 600;
+}
 
-    /* ===== COUPON ITEM ===== */
-    .coupon-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px;
-      border-radius: 14px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      cursor: pointer;
-      position: relative;
-    }
+/* ================= SUMMARY ================= */
+#summaryList {
+  margin: 18px 0;
+  padding-left: 20px;
+}
 
-    .coupon-item.selected {
-      border-color: #22c55e;
-      background: #f0fdf4;
-    }
+#summaryList li {
+  font-size: 14px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
 
-    .coupon-item.disabled {
-      opacity: .45;
-      cursor: not-allowed;
-    }
+#summaryList li:first-child {
+  list-style: none;
+  padding-left: 0;
+}
 
-    .coupon-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
+#summaryList li:first-child img {
+  margin-left: -4px;
+}
 
-    .coupon-icon.percent {
-      background: #ecfeff;
-      color: #0891b2;
-    }
+#bookingStatus {
+  display: block;
+  text-align: center;
+  margin: 16px 0 20px;
+}
 
-    .coupon-icon.cash {
-      background: #ecfdf5;
-      color: #16a34a;
-    }
+/* ================= COUPON ================= */
+.coupon-sheet {
+  width: 100%;
+}
 
-    .coupon-radio {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 2px solid #d1d5db;
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      position: absolute;
-      top: 14px;
-      right: 14px;
-    }
+.coupon-header input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1.5px solid #e5e7eb;
+  background: #f3f4f6;
+  font-size: 14px;
+}
 
-    .coupon-radio:checked {
-      border-color: #16a34a;
-      background: #16a34a;
-    }
+.coupon-header input:focus {
+  background: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+}
 
-    .coupon-radio:checked::after {
-      content: "✓";
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: 900;
-      line-height: 1;
-    }
+.coupon-header h3 {
+  font-size: medium;
+  padding-bottom: 10px;
+}
 
-    .coupon-body {
-      flex: 1;
-      min-width: 0;
-    }
+/* LIST */
+.coupon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0;
+}
 
-    .coupon-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
+/* ITEM */
+.coupon-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+}
 
-    .coupon-desc {
-      font-size: 13px;
-      color: #64748b;
-      margin-top: 2px;
-    }
+.coupon-item.selected {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
 
-    .coupon-error {
-      font-size: 12px;
-      color: #dc2626;
-      margin-top: 4px;
-    }
+.coupon-item.disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
 
-    .coupon-left {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding-top: 2px;
-    }
+/* ICON */
+.coupon-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
 
-    .coupon-sub {
-      font-size: 14px;
-      color: #6b7280;
-      margin-top: 2px;
-    }
+.coupon-icon.percent {
+  background: #ecfeff;
+  color: #0891b2;
+}
 
-    .coupon-divider {
-      border-top: 1.5px dashed #d1d5db;
-      margin: 12px -0px;
-    }
+.coupon-icon.cash {
+  background: #ecfdf5;
+  color: #16a34a;
+}
 
-    .coupon-note {
-      font-size: 13px;
-      color: #818793;
-      font-weight: 400;
-      line-height: 1.4;
-    }
+/* RADIO */
+.coupon-radio {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  appearance: none;
+  cursor: pointer;
+}
 
-    /* ================= TABLET ================= */
-    /* @media (max-width: 1024px) {
-      .service h2 {
-        font-size: 28px;
-      }
+.coupon-radio:checked {
+  background: #16a34a;
+  border-color: #16a34a;
+}
 
-      .service-card {
-        padding: 36px 28px;
-      }
-    } */
+.coupon-radio:checked::after {
+  content: "✓";
+  color: #fff;
+  font-size: 12px;
+  display: block;
+  text-align: center;
+  line-height: 18px;
+}
 
-    /* ================= MOBILE ================= */
-    /* @media (max-width: 768px) {
-      .container {
-        padding: 0 18px;
-      }
+/* TEXT */
+.coupon-title {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
 
-      .nav {
-        height: 64px;
-      }
+.coupon-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
 
-      .logo img {
-        height: 34px;
-      }
+/* ===== PROMISE  ===== */
+.promise {
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 14px;
+  line-height: 1.4;
+}
 
-      .nav-right {
-        gap: 10px;
-      }
+/* ================= RESPONSIVE ================= */
 
-      main {
-        padding: 40px 0;
-      }
+/* 360 */
+@media (min-width: 360px) {
+  .service h2 {
+    font-size: 26px;
+  }
 
-      .service {
-        padding: 40px 18px 80px;
-      }
+  #map {
+    height: 280px;
+  }
+}
 
-      .service h2 {
-        font-size: 22px;
-      }
+/* 768 */
+@media (min-width: 768px) {
+  .service {
+    padding: 50px 20px 100px;
+  }
 
-      .service-card {
-        padding: 28px 20px;
-        border-radius: 18px;
-      }
+  .service h2 {
+    font-size: 32px;
+  }
 
-      input,
-      textarea,
-      select {
-        font-size: 14px;
-      }
+  .service-card {
+    max-width: 600px;
+    padding: 32px;
+  }
 
-      .cta-secondary {
-        padding: 14px;
-        font-size: 15px;
-      }
-    } */
+  .modal-content {
+    max-width: 480px;
+    padding: 26px;
+  }
 
-    /* ================= SMALL PHONE ================= */
-    /* @media (max-width: 420px) {
-      .service-card {
-        padding: 22px 16px;
-      }
+  #map {
+    height: 320px;
+  }
+}
 
-      .modal-content {
-        width: 94%;
-        padding: 24px;
-        border-radius: 18px;
-      }
+/* 1024 */
+@media (min-width: 1024px) {
+  .service h2 {
+    font-size: 36px;
+  }
 
-      #map {
-        height: 240px;
-      }
+  .service-card {
+    max-width: 520px;
+    padding: 40px;
+  }
 
-      .coupon-sheet {
-        max-width: 100%;
-      }
-    }
+  #map {
+    height: 340px;
+  }
+}
 
-    @media (max-width: 380px) {
-      .notification-dropdown {
-        width: 280px;
-      }
-    } */
+/* 1400 */
+@media (min-width: 1400px) {
+  .service {
+    padding: 70px 20px 120px;
+  }
+
+  .service h2 {
+    font-size: 40px;
+  }
+
+  .service-card {
+    max-width: 560px;
+  }
+
+  #map {
+    height: 360px;
+  }
+}
